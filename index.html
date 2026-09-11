@@ -176,9 +176,35 @@
     /* ── PROMPT BUILDER ── */
     .builder { background: var(--sf-light); padding: 72px 60px; border-top: 1px solid var(--sf-border); }
     .builder-inner { max-width: 1280px; margin: 0 auto; }
-    .builder-header { margin-bottom: 32px; }
+    .builder-header { margin-bottom: 28px; }
     .builder-header h2 { font-size: 1.6rem; font-weight: 900; color: var(--sf-dark); letter-spacing: -0.025em; margin-bottom: 8px; }
-    .builder-header p { font-size: 0.9rem; color: var(--muted); max-width: 540px; line-height: 1.65; }
+    .builder-header p { font-size: 0.9rem; color: var(--muted); max-width: 560px; line-height: 1.65; }
+
+    /* Mode toggle */
+    .mode-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+    .mode-card {
+      background: white; border: 2px solid var(--sf-border); border-radius: 14px;
+      padding: 20px 22px; cursor: pointer; transition: all 0.2s; user-select: none;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .mode-card:hover { border-color: var(--sf-blue); }
+    .mode-card.active { border-color: var(--sf-blue); background: #EBF5FF; }
+    .mode-card.active .mode-icon { background: var(--sf-blue); }
+    .mode-icon {
+      width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px;
+      background: var(--sf-border); display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .mode-icon svg { width: 20px; height: 20px; stroke: white; }
+    .mode-card-text h4 { font-size: 14px; font-weight: 800; color: var(--sf-dark); margin-bottom: 4px; }
+    .mode-card-text p { font-size: 12px; color: var(--muted); line-height: 1.55; }
+    .mode-card-text .mode-tag {
+      display: inline-block; margin-top: 6px;
+      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 2px 8px; border-radius: 99px;
+    }
+    .mode-tag-blue { background: #DBEAFE; color: var(--sf-blue); }
+    .mode-tag-green { background: #DCFCE7; color: var(--sf-green); }
 
     .builder-note {
       background: #FEF9C3; border: 1px solid #FDE68A; border-radius: 10px;
@@ -505,18 +531,43 @@
   <div class="builder-inner">
     <div class="builder-header">
       <div class="section-label">Step 1 — Build Your Prompt</div>
-      <h2>Fill In Your Customer. We Write the Prompt.</h2>
-      <p>Complete the fields below and click "Generate My Gemini Prompt." You'll get a fully personalized prompt ready to paste — no questions back from Gemini, just output.</p>
+      <h2>First, Tell Us Where You Are.</h2>
+      <p>Your answer determines which fields we need and what kind of deck Gemini will build. Both paths take under 2 minutes to fill out.</p>
+    </div>
+
+    <!-- Mode selector -->
+    <div class="mode-toggle">
+      <div class="mode-card active" id="mode-notes" onclick="setMode('notes')">
+        <div class="mode-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="mode-card-text">
+          <h4>I have call notes or a meeting transcript</h4>
+          <p>You've already spoken with the customer. Gemini will read your notes and build a deck around their actual words, pain points, and situation.</p>
+          <span class="mode-tag mode-tag-blue">Account-specific deck</span>
+        </div>
+      </div>
+      <div class="mode-card" id="mode-discovery" onclick="setMode('discovery')">
+        <div class="mode-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="mode-card-text">
+          <h4>No notes yet — this is a first meeting or cold outreach</h4>
+          <p>You haven't spoken yet. Gemini will build an industry-informed POV deck showing how Salesforce has helped companies like theirs.</p>
+          <span class="mode-tag mode-tag-green">Discovery / POV deck</span>
+        </div>
+      </div>
     </div>
 
     <div class="builder-note">
       <svg width="16" height="16" fill="none" stroke="#92400E" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span><strong>Why this beats copying a generic prompt:</strong> The form pre-fills your customer's name, pain points, products, and team directly into the prompt. Gemini skips the Q&amp;A and jumps straight to building the deck. Saves 5–10 minutes of back-and-forth.</span>
+      <span id="builder-note-text"><strong>With notes:</strong> Gemini extracts the details automatically — team size, geo, tech stack, and their own language. Just share the notes and let it work.</span>
     </div>
 
     <form id="deck-form" onsubmit="return false;">
-      <!-- Row 1 -->
-      <div class="form-grid">
+
+      <!-- ── SHARED: Name + Website + PE (always visible) ── -->
+      <div class="form-grid" style="margin-bottom:16px;">
         <div class="form-group">
           <label>Customer Company Name *</label>
           <input type="text" id="f-name" placeholder="e.g. Acme Water Corp" required/>
@@ -526,22 +577,18 @@
           <input type="url" id="f-website" placeholder="https://acmewatercorp.com" required/>
         </div>
         <div class="form-group">
-          <label>PE / Investor Firm</label>
-          <input type="text" id="f-pe" placeholder="e.g. Blackstone Growth (or leave blank)"/>
+          <label>PE / Investor Firm <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+          <input type="text" id="f-pe" placeholder="e.g. Blackstone Growth"/>
         </div>
         <div class="form-group">
-          <label>Field / Service Team Size</label>
-          <input type="text" id="f-crews" placeholder="e.g. 200+ field technicians"/>
-        </div>
-        <div class="form-group">
-          <label>Geographic Footprint</label>
-          <input type="text" id="f-geo" placeholder="e.g. 32 states across the Southeast"/>
+          <label>Industry / Vertical *</label>
+          <input type="text" id="f-industry" placeholder="e.g. Water Infrastructure, Industrial Services"/>
         </div>
       </div>
 
-      <!-- Products -->
-      <div class="form-group full" style="margin-bottom:16px;">
-        <label>Salesforce Products (select all relevant)</label>
+      <!-- ── SHARED: Products (always visible) ── -->
+      <div class="form-group" style="margin-bottom:16px;">
+        <label>Salesforce Products — Select All Relevant</label>
         <div class="products-check" id="products-check">
           <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="Sales Cloud"/>Sales Cloud</label>
           <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="Field Service Mobile"/>Field Service Mobile</label>
@@ -556,25 +603,43 @@
         </div>
       </div>
 
-      <!-- Tech stack + notes -->
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Current Tech Stack</label>
-          <input type="text" id="f-tech" placeholder="e.g. Uses HubSpot (loves it), Oracle ERP, Snowflake"/>
-          <small>Important: any tool they love, we KEEP — Salesforce integrates, doesn't replace</small>
-        </div>
-        <div class="form-group">
-          <label>Next Meeting / Target Date</label>
-          <input type="text" id="f-date" placeholder="e.g. October 2026, Q4 2026"/>
-        </div>
-        <div class="form-group full">
+      <!-- ── MODE A: Have notes ── -->
+      <div id="fields-notes">
+        <div class="form-group" style="margin-bottom:16px;">
           <label>Call Transcript, Meeting Notes, or Google Doc URL *</label>
-          <textarea id="f-notes" placeholder="Paste a Google Docs or Google Meet Notes URL — Gemini will read it directly from your Workspace account. Or paste the raw transcript text. Either works." required></textarea>
+          <textarea id="f-notes" placeholder="Paste a Google Docs or Google Meet Notes URL — Gemini reads it directly from your Workspace. Or paste the raw transcript. Either works." style="min-height:140px;"></textarea>
           <small>Google Meet notes URL, Google Doc link, or raw transcript — Gemini reads all three since you're already signed into Google Workspace.</small>
         </div>
       </div>
 
-      <!-- Account team -->
+      <!-- ── MODE B: No notes / Discovery ── -->
+      <div id="fields-discovery" style="display:none;">
+        <div class="form-grid" style="margin-bottom:16px;">
+          <div class="form-group">
+            <label>Field / Service Team Size <span style="font-weight:400;color:var(--muted);">(estimate)</span></label>
+            <input type="text" id="f-crews" placeholder="e.g. 200+ field technicians, ~50 service crews"/>
+          </div>
+          <div class="form-group">
+            <label>Geographic Footprint</label>
+            <input type="text" id="f-geo" placeholder="e.g. 32 states across the Southeast"/>
+          </div>
+          <div class="form-group">
+            <label>Known Tech Stack <span style="font-weight:400;color:var(--muted);">(tools they already use)</span></label>
+            <input type="text" id="f-tech" placeholder="e.g. HubSpot, Oracle ERP, Snowflake"/>
+            <small>Any tool they love, Salesforce integrates — not replaces.</small>
+          </div>
+          <div class="form-group">
+            <label>Meeting Date / Target Timeline</label>
+            <input type="text" id="f-date" placeholder="e.g. October 2026, Q4 2026"/>
+          </div>
+          <div class="form-group full">
+            <label>What do you already know about them? <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+            <textarea id="f-context" placeholder="LinkedIn research, press releases, anything from their website, a referral note — even a sentence or two helps Gemini personalize the deck." style="min-height:100px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SHARED: Account team ── -->
       <div class="form-group" style="margin-bottom:12px;">
         <label>Account Team</label>
       </div>
@@ -723,134 +788,214 @@ function togglePill(label) {
   }, 0);
 }
 
+/* ── Mode toggle ── */
+let activeMode = 'notes';
+
+function setMode(mode) {
+  activeMode = mode;
+  document.getElementById('mode-notes').classList.toggle('active', mode === 'notes');
+  document.getElementById('mode-discovery').classList.toggle('active', mode === 'discovery');
+  document.getElementById('fields-notes').style.display     = mode === 'notes'     ? 'block' : 'none';
+  document.getElementById('fields-discovery').style.display = mode === 'discovery' ? 'block' : 'none';
+  const noteEl = document.getElementById('builder-note-text');
+  if (mode === 'notes') {
+    noteEl.innerHTML = '<strong>With notes:</strong> Gemini extracts the details automatically — team size, geo, tech stack, and their own language. Just share the notes and let it work.';
+  } else {
+    noteEl.innerHTML = '<strong>No notes yet:</strong> Gemini will build a Salesforce POV deck using industry knowledge and customer success stories relevant to their vertical — a strong leave-behind before a first meeting.';
+  }
+  document.getElementById('prompt-output').classList.remove('visible');
+}
+
 /* ── Prompt builder ── */
 function buildPrompt() {
-  const name    = document.getElementById('f-name').value.trim();
-  const website = document.getElementById('f-website').value.trim();
-  const pe      = document.getElementById('f-pe').value.trim();
-  const crews   = document.getElementById('f-crews').value.trim();
-  const geo     = document.getElementById('f-geo').value.trim();
-  const tech    = document.getElementById('f-tech').value.trim();
-  const date    = document.getElementById('f-date').value.trim() || 'Q4 2026';
-  const notes   = document.getElementById('f-notes').value.trim();
-  const aeName  = document.getElementById('f-ae-name').value.trim();
-  const aeTitle = 'Account Executive';
-  const aeEmail = document.getElementById('f-ae-email').value.trim();
-  const seName  = document.getElementById('f-se-name').value.trim();
-  const seTitle = 'Solutions Engineer';
-  const seEmail = document.getElementById('f-se-email').value.trim();
-  const rvpName = document.getElementById('f-rvp-name').value.trim();
-  const rvpTitle= 'Regional Vice President';
-  const rvpEmail= document.getElementById('f-rvp-email').value.trim();
+  const name     = document.getElementById('f-name').value.trim();
+  const website  = document.getElementById('f-website').value.trim();
+  const pe       = document.getElementById('f-pe').value.trim();
+  const industry = document.getElementById('f-industry').value.trim();
+  const aeName   = document.getElementById('f-ae-name').value.trim();
+  const aeEmail  = document.getElementById('f-ae-email').value.trim();
+  const seName   = document.getElementById('f-se-name').value.trim();
+  const seEmail  = document.getElementById('f-se-email').value.trim();
+  const rvpName  = document.getElementById('f-rvp-name').value.trim();
+  const rvpEmail = document.getElementById('f-rvp-email').value.trim();
 
-  if (!name || !website || !notes) {
-    alert('Please fill in at least the Customer Name, Website, and Call Notes.');
+  if (!name || !website) {
+    alert('Please fill in the Customer Name and Website.');
     return;
   }
 
   const products = [...document.querySelectorAll('#products-check input:checked')].map(i => i.value);
+  const productList = products.length > 0
+    ? products.map(p => `  • ${p}`).join('\n')
+    : '  • Sales Cloud\n  • Field Service Mobile\n  • Data Cloud\n  • Agentforce';
 
-  const prompt = `You are a senior Salesforce solutions architect and executive communication specialist. Generate a fully branded, interactive HTML executive sales deck for a Salesforce customer — a live web presentation the AE can share as a URL.
+  const team = `  AE:  ${aeName || 'Your AE Name'} | Account Executive | ${aeEmail || 'ae@salesforce.com'}
+  SE:  ${seName || 'Your SE Name'} | Solutions Engineer | ${seEmail || 'se@salesforce.com'}
+  RVP: ${rvpName || 'Your RVP Name'} | Regional Vice President | ${rvpEmail || 'rvp@salesforce.com'}`;
 
-I have already filled in all the customer details below. Do NOT ask me any clarifying questions. Read all the information I've provided and immediately generate the three complete HTML files.
+  const sharedQuality = `BRANDING:
+  • Fetch brand colors from ${website} — use their actual palette (CSS variables: --brand-primary, --brand-secondary, --brand-accent, --brand-light)
+  • Pull logo and hero imagery directly from ${website}
+  • Every visual should feel purpose-built for ${name}, not a generic Salesforce template
+
+TECHNICAL:
+  • Single-file output per page — CDN only (Tailwind, Chart.js, Google Fonts — no external CSS files)
+  • Fully mobile-responsive; sidebar collapses to hamburger on mobile
+  • Progress bar at top of index.html; keyboard arrow navigation between slides
+  • All interactive components working: flip cards, detail drawers, accordion, chart tabs, flow diagram
+
+OUTPUT FORMAT:
+  • Output index.html as one complete unbroken code block
+  • Then team.html as a second code block
+  • Then exec-summary.html as a third code block
+  • Do not truncate any file — output each one in full`;
+
+  let prompt;
+
+  if (activeMode === 'notes') {
+    // ── Account-specific deck (has notes) ──
+    const notes = document.getElementById('f-notes').value.trim();
+    if (!notes) {
+      alert('Please paste your call notes or a Google Doc URL.');
+      return;
+    }
+    prompt = `You are a senior Salesforce solutions architect and executive communication specialist. Generate a fully branded, interactive HTML executive sales deck — a live web presentation the AE can share as a URL.
+
+Do NOT ask any clarifying questions. Read the information below and immediately generate three complete HTML files.
 
 ════════════════════════════════════════
-CUSTOMER INFORMATION
+CUSTOMER
 ════════════════════════════════════════
 
-Company Name: ${name}
-Website: ${website}${pe ? `\nPE / Investor Firm: ${pe}` : '\nPE / Investor Firm: None'}${crews ? `\nField / Service Team: ${crews}` : ''}${geo ? `\nGeographic Footprint: ${geo}` : ''}
-Current Tech Stack: ${tech || 'Not specified — treat all tools as worth keeping and integrating'}
-Target Review Date: ${date}
+Company: ${name}
+Website: ${website}
+Industry: ${industry || 'See notes'}${pe ? `\nPE / Investor Firm: ${pe}` : ''}
 
-Salesforce Products to Feature:
-${products.length > 0 ? products.map(p => `  • ${p}`).join('\n') : '  • Sales Cloud\n  • Field Service Mobile\n  • Data Cloud\n  • Agentforce'}
+Salesforce Products:
+${productList}
 
 Account Team:
-  AE:  ${aeName || 'Your AE Name'} | ${aeTitle || 'Account Executive'} | ${aeEmail || 'ae@salesforce.com'}
-  SE:  ${seName || 'Your SE Name'} | ${seTitle || 'Solutions Engineer'} | ${seEmail || 'se@salesforce.com'}
-  RVP: ${rvpName || 'Your RVP Name'} | ${rvpTitle || 'Regional Vice President'} | ${rvpEmail || 'rvp@salesforce.com'}
+${team}
 
 ════════════════════════════════════════
-CALL TRANSCRIPT / MEETING NOTES
+CALL NOTES / TRANSCRIPT
 ════════════════════════════════════════
 
 ${notes}
 
 ════════════════════════════════════════
-WHAT TO GENERATE
+WHAT TO BUILD
 ════════════════════════════════════════
 
-Read the transcript above and extract exactly 4 customer pain points. For each pain point:
-  • Write a 3–5 word headline using the customer's own language
-  • Write a 2–3 sentence description from the transcript
-  • Extract two statistics that quantify the pain
-  • Map it to the most relevant Salesforce product from the list above
-  • Write 3 bullet points describing the Salesforce solution
+From the notes, extract:
+  • Exactly 4 pain points — use the customer's own words, not generic language
+  • Key stats they mentioned (revenue, team size, geography, growth targets)
+  • Their current tech stack — name every tool, especially ones they like (we integrate, never replace)
 
-Then generate THREE complete, self-contained HTML files:
+Generate THREE complete, self-contained HTML files:
 
-FILE 1: index.html — 9-slide interactive web deck
-  • Slide 1: Hero with ${name} logo fetched from ${website}, Salesforce logo, key stats, product pills
-  • Slide 2: Four flip cards — front = pain in customer's words, back = Salesforce solution (hover/click to flip)
-  • Slide 3: Platform overview — one card per Salesforce product, click to expand detail drawer
-  • Slide 4: Field intelligence flow diagram — interactive 3-step animation with advance/reset buttons
-  • Slide 5: Marketing attribution before/after — uses actual tools from their tech stack
-  • Slide 6: AI architecture clickable accordion (data layer → Data Cloud → Trust Layer → Agentforce → Apps)
-  • Slide 7: Board dashboard mockup — 3 interactive tabs (renewal risk table, pipeline bar chart, win/loss doughnut)
-  • Slide 8: PE portfolio (if PE firm provided) or growth platform slide
-  • Slide 9: 90-day roadmap with two CTA buttons → team.html and exec-summary.html
+FILE 1: index.html — 9-slide interactive account deck
+  • Slide 1: Hero — ${name} logo + Salesforce logo, their key stats animated, product pills
+  • Slide 2: Pain points — 4 flip cards (front: their words, back: Salesforce solution). Click/hover to flip.
+  • Slide 3: Platform — one card per product, click to open right-side detail drawer
+  • Slide 4: Field intelligence flow — interactive 3-step diagram with Advance/Reset buttons
+  • Slide 5: Before/After — integration story naming the specific tools from their stack
+  • Slide 6: AI architecture — clickable accordion: Data Layer → Data Cloud → Trust Layer → Agentforce → Apps
+  • Slide 7: Executive dashboard — 3 tabs: renewal risk table, pipeline bar chart (Chart.js), win/loss doughnut
+  • Slide 8: ${pe ? `PE portfolio value slide for ${pe}` : 'Growth roadmap and platform slide'}
+  • Slide 9: 90-day roadmap + two CTA buttons → team.html and exec-summary.html
 
-FILE 2: team.html — standalone team page
-  • Clean contact cards for each account team member
-  • Initials avatars (H, E, J style) in brand colors
-  • Direct mailto links
-  • Back link to index.html
-
-FILE 3: exec-summary.html — print-ready executive summary
-  • Print/Save PDF button at top
-  • All 4 pillars with outcomes
-  • 30/60/90 roadmap
-  • CTA to team.html
+FILE 2: team.html — account team page with contact cards, initials avatars, mailto links, back link
+FILE 3: exec-summary.html — print-ready one-pager: Print/Save PDF button, 4 pillars, 30/60/90 timeline, team CTA
 
 ════════════════════════════════════════
-QUALITY REQUIREMENTS
+QUALITY
 ════════════════════════════════════════
-
-BRANDING:
-  • Fetch the customer's brand colors from ${website} — use their actual palette throughout
-  • Use CSS variables (--brand-primary, --brand-secondary, --brand-accent, --brand-light)
-  • Use the customer's logo and hero photography from their website
-  • Every visual should feel like it was made specifically for ${name}, not a Salesforce template
 
 CONTENT:
-  • Use the customer's own language and phrases from the transcript
-  • NEVER suggest replacing tools they love — if they use ${tech || 'any tool'}, say "integration" not "replacement"
-  • Sound consultative and executive, never like a product brochure
-  • All stats and pain points must come from the transcript, not generic filler
+  • Use ${name}'s actual words from the notes throughout
+  • Never suggest replacing tools they use — frame as integration and amplification
+  • All stats must come from the notes, not invented filler
+  • Tone: consultative, executive, specific
 
-TECHNICAL:
-  • Single-file output for each page — no external CSS files (use CDN for Tailwind, Chart.js, Google Fonts only)
-  • Fully mobile-responsive with hamburger-hidden sidebar on mobile
-  • Progress bar at top of index.html (scrolls as user reads)
-  • Keyboard navigation (arrow keys advance slides) in index.html
-  • All interactive components working: flip cards, drawers, accordion, tabs, flow diagram
-
-OUTPUT FORMAT:
-  • Output index.html as one complete, unbroken code block
-  • Then output team.html as a second code block
-  • Then output exec-summary.html as a third code block
-  • After each file, briefly note what the AE should name it and where it goes
-  • Do not truncate any file — if it's long, output it completely
+${sharedQuality}
 
 Start generating now. Output index.html first.`;
+
+  } else {
+    // ── Discovery / POV deck (no notes) ──
+    const crews   = document.getElementById('f-crews').value.trim();
+    const geo     = document.getElementById('f-geo').value.trim();
+    const tech    = document.getElementById('f-tech').value.trim();
+    const date    = document.getElementById('f-date').value.trim() || 'Q4 2026';
+    const context = document.getElementById('f-context').value.trim();
+
+    prompt = `You are a senior Salesforce solutions architect and executive communication specialist. Generate a fully branded, interactive HTML point-of-view (POV) deck for a prospect we have not yet met with.
+
+This is NOT an account recap. It is a first-meeting leave-behind that shows ${name} how Salesforce has helped companies just like theirs — building credibility and creating pull toward a discovery conversation.
+
+Do NOT ask any clarifying questions. Generate three complete HTML files immediately.
+
+════════════════════════════════════════
+PROSPECT
+════════════════════════════════════════
+
+Company: ${name}
+Website: ${website}
+Industry: ${industry || 'Infer from website'}${pe ? `\nPE / Investor Firm: ${pe}` : ''}${crews ? `\nEstimated Field Team: ${crews}` : ''}${geo ? `\nGeographic Footprint: ${geo}` : ''}${tech ? `\nKnown Tech Stack: ${tech}` : ''}
+Target Meeting: ${date}${context ? `\n\nWhat we already know:\n${context}` : ''}
+
+Salesforce Products to Feature:
+${productList}
+
+Account Team:
+${team}
+
+════════════════════════════════════════
+WHAT TO BUILD
+════════════════════════════════════════
+
+Build a POV deck for ${name} in the ${industry || 'their'} industry. Since we haven't spoken with them yet:
+  • Lead with industry challenges, not assumptions about their company
+  • Show proof with real Salesforce customer stories and published statistics
+  • Create curiosity — make them want the conversation, not feel presumed upon
+  • End with questions and a clear next step
+
+Generate THREE complete, self-contained HTML files:
+
+FILE 1: index.html — 8-slide discovery POV deck
+  • Slide 1: Hero — ${name} logo + Salesforce logo, bold industry challenge headline, product pills
+  • Slide 2: Industry landscape — 4 stat cards showing macro challenges companies like ${name} face (use real research)
+  • Slide 3: What we're seeing — 4 flip cards: common pain pattern in ${industry || 'their industry'} → how Salesforce addresses it
+  • Slide 4: Platform — one card per product, click to open right-side detail drawer
+  • Slide 5: Customer proof — 3 real Salesforce customer success stories from similar companies, with metrics
+  • Slide 6: AI + Data — what Agentforce and Data Cloud unlock for companies at their stage
+  • Slide 7: What fast looks like — a 90-day picture (not a commitment, just a vision)
+  • Slide 8: Let's talk — 3 discovery questions we'd love to explore + two CTA buttons → team.html and exec-summary.html
+
+FILE 2: team.html — account team page with contact cards, initials avatars, mailto links, back link
+FILE 3: exec-summary.html — print-ready one-pager: industry challenge framing, 4 value pillars, next step CTA, team contact
+
+════════════════════════════════════════
+QUALITY
+════════════════════════════════════════
+
+CONTENT:
+  • Tone: peer-to-peer, curious, consultative — never salesy or presumptuous
+  • Frame as "what we're seeing in your industry," not "here's what's wrong with your company"
+  • Use real Salesforce proof points and published industry statistics throughout
+  • End with questions, not answers — create the pull toward a discovery conversation
+
+${sharedQuality}
+
+Start generating now. Output index.html first.`;
+  }
 
   document.getElementById('prompt-output-box').textContent = prompt;
   const outputEl = document.getElementById('prompt-output');
   outputEl.classList.add('visible');
   outputEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
 function copyOutput() {
   const text = document.getElementById('prompt-output-box').textContent;
   navigator.clipboard.writeText(text).then(() => {
