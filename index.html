@@ -506,11 +506,6 @@
           <input type="url" id="f-website" placeholder="https://acmewatercorp.com" required/>
         </div>
         <div class="form-group">
-          <label>Short Name / Abbreviation</label>
-          <input type="text" id="f-short" placeholder="e.g. Acme"/>
-          <small>Used in slide headlines — leave blank to use full name</small>
-        </div>
-        <div class="form-group">
           <label>PE / Investor Firm</label>
           <input type="text" id="f-pe" placeholder="e.g. Blackstone Growth (or leave blank)"/>
         </div>
@@ -551,8 +546,9 @@
           <input type="text" id="f-date" placeholder="e.g. October 2026, Q4 2026"/>
         </div>
         <div class="form-group full">
-          <label>Call Transcript or Meeting Notes *</label>
-          <textarea id="f-notes" placeholder="Paste your full call transcript or meeting notes here. The messier the better — Gemini will extract the pain points, stats, and your customer's own language." required></textarea>
+          <label>Call Transcript, Meeting Notes, or Google Doc URL *</label>
+          <textarea id="f-notes" placeholder="Paste a Google Docs or Google Meet Notes URL — Gemini will read it directly from your Workspace account. Or paste the raw transcript text. Either works." required></textarea>
+          <small>Google Meet notes URL, Google Doc link, or raw transcript — Gemini reads all three since you're already signed into Google Workspace.</small>
         </div>
       </div>
 
@@ -705,7 +701,6 @@ function togglePill(label) {
 function buildPrompt() {
   const name    = document.getElementById('f-name').value.trim();
   const website = document.getElementById('f-website').value.trim();
-  const short   = document.getElementById('f-short').value.trim() || name.split(' ')[0];
   const pe      = document.getElementById('f-pe').value.trim();
   const crews   = document.getElementById('f-crews').value.trim();
   const geo     = document.getElementById('f-geo').value.trim();
@@ -738,7 +733,6 @@ CUSTOMER INFORMATION
 ════════════════════════════════════════
 
 Company Name: ${name}
-Short Name: ${short}
 Website: ${website}${pe ? `\nPE / Investor Firm: ${pe}` : '\nPE / Investor Firm: None'}${crews ? `\nField / Service Team: ${crews}` : ''}${geo ? `\nGeographic Footprint: ${geo}` : ''}
 Current Tech Stack: ${tech || 'Not specified — treat all tools as worth keeping and integrating'}
 Target Review Date: ${date}
@@ -771,7 +765,7 @@ Read the transcript above and extract exactly 4 customer pain points. For each p
 Then generate THREE complete, self-contained HTML files:
 
 FILE 1: index.html — 9-slide interactive web deck
-  • Slide 1: Hero with ${name} logo (from ${website}), Salesforce logo, key stats, product pills
+  • Slide 1: Hero with ${name} logo fetched from ${website}, Salesforce logo, key stats, product pills
   • Slide 2: Four flip cards — front = pain in customer's words, back = Salesforce solution (hover/click to flip)
   • Slide 3: Platform overview — one card per Salesforce product, click to expand detail drawer
   • Slide 4: Field intelligence flow diagram — interactive 3-step animation with advance/reset buttons
