@@ -6,7 +6,6 @@
   <title>AE Deck Kit | Salesforce</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -358,89 +357,67 @@
       font-size: 12px; color: #14532D; font-weight: 600;
     }
 
-    /* ── DEPLOY ZONE ── */
+    /* ── DEPLOY / GITHUB PAGES ── */
     .deploy { background: white; padding: 72px 60px; border-top: 1px solid var(--sf-border); }
     .deploy-inner {
       max-width: 1280px; margin: 0 auto;
       display: grid; grid-template-columns: 1fr 1.4fr;
       gap: 52px; align-items: start;
     }
-    .deploy-left {}
     .deploy-header { margin-bottom: 24px; }
     .deploy-header h2 { font-size: 1.6rem; font-weight: 900; color: var(--sf-dark); letter-spacing: -0.025em; margin-bottom: 8px; }
     .deploy-header p { font-size: 0.9rem; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
     .deploy-why {
       display: flex; align-items: flex-start; gap: 10px;
       background: #FFF7ED; border-left: 3px solid #F97316;
-      border-radius: 0 8px 8px 0;
-      padding: 14px 16px;
+      border-radius: 0 8px 8px 0; padding: 14px 16px;
     }
     .deploy-why svg { flex-shrink: 0; margin-top: 2px; color: #EA580C; }
     .deploy-why p { font-size: 12px; font-weight: 500; color: #7C2D12; line-height: 1.7; margin: 0; }
     .deploy-why strong { font-weight: 800; color: #9A3412; }
-    .deploy-right {}
 
-    .drop-zone {
-      border: 2.5px dashed var(--sf-border); border-radius: 16px;
-      padding: 52px 32px; text-align: center; cursor: pointer;
-      transition: all 0.25s ease; background: var(--sf-light);
-      position: relative;
-    }
-    .drop-zone.drag-over {
-      border-color: var(--sf-blue); background: #EBF5FF;
-      transform: scale(1.01);
-    }
-    .drop-zone input[type="file"] { display: none; }
-    .drop-icon { width: 56px; height: 56px; background: linear-gradient(135deg, var(--sf-blue), var(--sf-dark)); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
-    .drop-icon svg { width: 28px; height: 28px; stroke: white; }
-    .drop-zone h3 { font-size: 1.05rem; font-weight: 800; color: var(--sf-dark); margin-bottom: 6px; }
-    .drop-zone p { font-size: 13px; color: var(--muted); }
-    .drop-browse { color: var(--sf-blue); font-weight: 700; cursor: pointer; text-decoration: underline; }
-
-    /* File list */
-    .file-list { margin-top: 24px; display: none; }
-    .file-list.visible { display: block; }
-    .file-list-header { font-size: 12px; font-weight: 700; color: var(--sf-dark); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
-    .file-item {
-      display: flex; align-items: center; gap: 10px;
+    /* GitHub steps */
+    .gh-steps { display: flex; flex-direction: column; gap: 12px; }
+    .gh-step {
+      display: flex; gap: 16px; align-items: flex-start;
       background: var(--sf-light); border: 1px solid var(--sf-border);
-      border-radius: 9px; padding: 10px 14px; margin-bottom: 6px;
+      border-radius: 14px; padding: 18px 20px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .file-item svg { flex-shrink: 0; color: var(--sf-blue); }
-    .file-item-name { font-size: 13px; font-weight: 600; color: var(--sf-dark); flex: 1; }
-    .file-item-size { font-size: 11px; color: var(--muted); }
-    .file-remove { background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 2px; transition: color 0.2s; }
-    .file-remove:hover { color: #EF4444; }
-
-    .deploy-actions { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
-    .deploy-btn {
-      display: flex; align-items: center; gap: 8px;
-      padding: 13px 24px; border-radius: 10px;
-      font-size: 14px; font-weight: 800; border: none; cursor: pointer;
+    .gh-step:hover { border-color: var(--sf-blue); box-shadow: 0 2px 12px rgba(1,118,211,0.08); }
+    .gh-step-num {
+      width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%;
+      background: var(--sf-blue); color: white;
+      font-size: 13px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gh-step-body h4 { font-size: 13px; font-weight: 800; color: var(--sf-dark); margin-bottom: 4px; }
+    .gh-step-body p { font-size: 12px; color: var(--muted); line-height: 1.65; margin: 0; }
+    .gh-step-body code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px; background: #E8F0FE; color: var(--sf-dark);
+      padding: 1px 5px; border-radius: 4px;
+    }
+    .gh-step-warning {
+      font-size: 11px; color: #92400E; font-weight: 700;
+      background: #FEF9C3; border-radius: 5px;
+      padding: 3px 8px; display: inline-block; margin-top: 5px;
+    }
+    .gh-open-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: linear-gradient(135deg, var(--sf-dark), var(--sf-blue));
+      color: white; font-size: 14px; font-weight: 800;
+      padding: 14px 24px; border-radius: 11px;
+      text-decoration: none; margin-top: 16px;
       transition: opacity 0.2s, transform 0.15s;
     }
-    .deploy-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-    .deploy-btn-primary { background: linear-gradient(135deg, var(--sf-dark), var(--sf-blue)); color: white; }
-    .deploy-btn-clear { background: white; color: var(--muted); border: 1.5px solid var(--sf-border); }
-    .deploy-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-    .deploy-result {
-      margin-top: 20px; display: none;
-      background: #DCFCE7; border: 1px solid #86EFAC; border-radius: 12px;
-      padding: 20px 24px;
-    }
-    .deploy-result.visible { display: block; }
-    .deploy-result h4 { font-size: 13px; font-weight: 800; color: #14532D; margin-bottom: 6px; }
-    .deploy-result p { font-size: 12px; color: #166534; line-height: 1.6; }
-    .deploy-result .open-netlify-btn {
+    .gh-open-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .gh-free-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: var(--sf-green); color: white;
-      font-size: 12px; font-weight: 700;
-      padding: 9px 18px; border-radius: 8px;
-      text-decoration: none; margin-top: 12px;
-      transition: opacity 0.2s;
+      background: #DCFCE7; border: 1px solid #86EFAC;
+      color: var(--sf-green); font-size: 11px; font-weight: 800;
+      padding: 4px 10px; border-radius: 99px; margin-bottom: 20px;
     }
-    .deploy-result .open-netlify-btn:hover { opacity: 0.88; }
 
     /* ── TIPS ── */
     .tips { background: var(--sf-light); padding: 56px 60px; border-top: 1px solid var(--sf-border); }
@@ -480,8 +457,6 @@
       .team-row { grid-template-columns: 1fr; }
       .deploy { padding: 48px 24px; }
       .deploy-inner { grid-template-columns: 1fr; gap: 28px; }
-      .deploy-actions { flex-direction: column; }
-      .deploy-btn { justify-content: center; }
       .tips { padding: 44px 24px; }
       .tips-grid { grid-template-columns: 1fr; }
       footer { padding: 28px 24px; }
@@ -815,7 +790,7 @@
 
 <hr class="divider"/>
 
-<!-- ═══════════ DEPLOY ZONE ═══════════ -->
+<!-- ═══════════ DEPLOY / GITHUB PAGES ═══════════ -->
 <section class="deploy" id="deploy">
   <div class="deploy-inner">
 
@@ -823,53 +798,70 @@
     <div class="deploy-left">
       <div class="deploy-header">
         <div class="section-label">Step 2 — Publish Your Deck</div>
-        <h2>Drop Your Files. Get a Shareable URL.</h2>
-        <p>Drag the HTML files Gemini generated onto the zone. We'll package them and open Netlify Drop — one drag and your link is live.</p>
+        <h2>Upload to GitHub.<br/>Get a Permanent URL.</h2>
+        <p>GitHub Pages is free for every Salesforce employee — no credit limits, no badges, no extra accounts. Five clicks in a browser and your deck is live.</p>
+      </div>
+      <div class="gh-free-badge">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Free with your Salesforce GitHub account · No credit limits
       </div>
       <div class="deploy-why">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <p><strong>Why this step matters:</strong> Gemini saves your deck as files on your local device — only you can open them. To send a link your customer can open anywhere, forward to their team, or pull up in a board meeting, it needs to live at a public URL. This step does that — no account required, about 10 seconds.</p>
+        <p><strong>Why this step matters:</strong> Gemini saves your deck as files on your local device — only you can open them. To send a link your customer can open on any device, forward to their team, or pull up in a board meeting, the files need to live at a public URL. GitHub Pages does that for free, permanently.</p>
       </div>
     </div>
 
-    <!-- Right: drop zone + file list + actions -->
+    <!-- Right: GitHub Pages steps -->
     <div class="deploy-right">
-      <div class="drop-zone" id="drop-zone"
-        ondragover="handleDragOver(event)"
-        ondragleave="handleDragLeave(event)"
-        ondrop="handleDrop(event)"
-        onclick="document.getElementById('file-input').click()">
-        <input type="file" id="file-input" multiple accept=".html,.png,.jpg,.jpeg,.svg,.css,.js" onchange="handleFileSelect(event)"/>
-        <div class="drop-icon">
-          <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="gh-steps">
+
+        <div class="gh-step">
+          <div class="gh-step-num">1</div>
+          <div class="gh-step-body">
+            <h4>Sign in to GitHub with your Salesforce account</h4>
+            <p>Go to <strong>github.com</strong> and sign in. Use "Sign in with Google" and your <code>@salesforce.com</code> email — you already have access.</p>
+          </div>
         </div>
-        <h3>Drop your HTML files here</h3>
-        <p>index.html, team.html, exec-summary.html + any photo files<br/>
-        or <span class="drop-browse">click to browse</span></p>
+
+        <div class="gh-step">
+          <div class="gh-step-num">2</div>
+          <div class="gh-step-body">
+            <h4>Create a new repository</h4>
+            <p>Click <strong>"+"</strong> in the top right → <strong>New repository</strong>. Name it something like <code>acme-salesforce-deck</code>. Set to <strong>Public</strong>. Click <strong>Create repository</strong>.</p>
+          </div>
+        </div>
+
+        <div class="gh-step">
+          <div class="gh-step-num">3</div>
+          <div class="gh-step-body">
+            <h4>Upload all three HTML files</h4>
+            <p>In the empty repo, click <strong>"uploading an existing file."</strong> Drag <code>index.html</code>, <code>team.html</code>, and <code>exec-summary.html</code> — plus any photo files — onto the page. Click <strong>Commit changes</strong>.</p>
+            <span class="gh-step-warning">All three files must be uploaded together — they link to each other.</span>
+          </div>
+        </div>
+
+        <div class="gh-step">
+          <div class="gh-step-num">4</div>
+          <div class="gh-step-body">
+            <h4>Enable GitHub Pages</h4>
+            <p>Click the <strong>Settings</strong> tab → <strong>Pages</strong> in the left sidebar. Under Source, select <strong>Deploy from a branch</strong> → Branch: <strong>main</strong> → Click <strong>Save</strong>.</p>
+          </div>
+        </div>
+
+        <div class="gh-step">
+          <div class="gh-step-num">5</div>
+          <div class="gh-step-body">
+            <h4>Copy your live URL — it's ready in ~60 seconds</h4>
+            <p>Stay on the Pages settings page. A green banner will appear with your URL in the format <code>[username].github.io/[repo-name]/</code>. Copy it. Send it.</p>
+          </div>
+        </div>
+
       </div>
 
-      <div class="file-list" id="file-list">
-        <div class="file-list-header">Files ready to deploy</div>
-        <div id="file-items"></div>
-      </div>
-
-      <div class="deploy-actions" id="deploy-actions" style="display:none;">
-        <button class="deploy-btn deploy-btn-primary" id="deploy-btn" onclick="deployFiles()">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Package &amp; Open Netlify Drop
-        </button>
-        <button class="deploy-btn deploy-btn-clear" onclick="clearFiles()">Clear Files</button>
-      </div>
-
-      <div class="deploy-result" id="deploy-result">
-        <h4>✓ Your files are packaged — two steps left:</h4>
-        <p><strong>1.</strong> <code>customer-deck.zip</code> downloaded to your Downloads folder.<br/>
-        <strong>2.</strong> Netlify Drop opened in a new tab. Drag the zip there. Live URL in ~10 seconds.</p>
-        <a href="https://app.netlify.com/drop" target="_blank" class="open-netlify-btn">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Open Netlify Drop Again
-        </a>
-      </div>
+      <a href="https://github.com/new" target="_blank" class="gh-open-btn">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        Open GitHub — Create New Repo
+      </a>
     </div>
 
   </div>
@@ -988,15 +980,33 @@ function buildPrompt() {
   SE:  ${seName || 'Your SE Name'} | Solutions Engineer | ${seEmail || 'se@salesforce.com'}
   RVP: ${rvpName || 'Your RVP Name'} | Regional Vice President | ${rvpEmail || 'rvp@salesforce.com'}`;
 
-  const sharedQuality = `BRANDING:
-  • Fetch brand colors from ${website} — use their actual palette (CSS variables: --brand-primary, --brand-secondary, --brand-accent, --brand-light)
-  • Pull logo and hero imagery directly from ${website}
-  • Every visual should feel purpose-built for ${name}, not a generic Salesforce template
+  const sharedQuality = `BRANDING (CRITICAL — do this first):
+  • Visit ${website} before writing a single line of code
+  • Extract the actual primary hex color from their site (logo, header, buttons, or dominant brand color) — store as --brand-primary
+  • Extract a secondary/accent color (hover states, highlights) — store as --brand-secondary
+  • Download or hotlink the company logo from ${website} and use it prominently on every page
+  • The dominant color in the entire deck must be ${name}'s brand color — NOT Salesforce blue (#0176D3)
+  • Salesforce blue may only appear as a subtle accent (e.g. one badge or small icon), never as a background, header, or primary button color
+  • Every page must look like it was designed for ${name}, not a generic Salesforce slide deck
+
+NAVIGATION / LAYOUT:
+  • All three pages use a scrollable single-page layout — no click-through slide carousels, no "Next slide" buttons
+  • Users scroll down to advance through content; anchor links in the nav jump to sections within the same page
+  • Each section is a full-width content block with generous padding, never hidden behind a slide controller
+
+CROSS-FILE LINKS (CRITICAL — must use relative paths):
+  • In index.html: link to team page as href="team.html" and exec summary as href="exec-summary.html" — no absolute URLs, no hash-only links
+  • In team.html: link back to main deck as href="index.html"
+  • In exec-summary.html: link back to main deck as href="index.html"
+  • Test mentally: if all three files are in the same folder, every link must resolve
+
+NO THIRD-PARTY WIDGETS:
+  • Do not include any chat widgets, live chat scripts, Netlify scripts, tracking pixels, or analytics tags
+  • Only these CDN scripts are permitted: Tailwind CSS, Chart.js, Google Fonts — nothing else
 
 TECHNICAL:
   • Single-file output per page — CDN only (Tailwind, Chart.js, Google Fonts — no external CSS files)
-  • Fully mobile-responsive; sidebar collapses to hamburger on mobile
-  • Progress bar at top of index.html; keyboard arrow navigation between slides
+  • Fully mobile-responsive
   • All interactive components working: flip cards, detail drawers, accordion, chart tabs, flow diagram
 
 OUTPUT FORMAT:
@@ -1049,16 +1059,16 @@ From the notes, extract:
 
 Generate THREE complete, self-contained HTML files:
 
-FILE 1: index.html — 9-slide interactive account deck
-  • Slide 1: Hero — ${name} logo + Salesforce logo, their key stats animated, product pills
-  • Slide 2: Pain points — 4 flip cards (front: their words, back: Salesforce solution). Click/hover to flip.
-  • Slide 3: Platform — one card per product, click to open right-side detail drawer
-  • Slide 4: Field intelligence flow — interactive 3-step diagram with Advance/Reset buttons
-  • Slide 5: Before/After — integration story naming the specific tools from their stack
-  • Slide 6: AI architecture — clickable accordion: Data Layer → Data Cloud → Trust Layer → Agentforce → Apps
-  • Slide 7: Executive dashboard — 3 tabs: renewal risk table, pipeline bar chart (Chart.js), win/loss doughnut
-  • Slide 8: ${pe ? `PE portfolio value slide for ${pe}` : 'Growth roadmap and platform slide'}
-  • Slide 9: 90-day roadmap + two CTA buttons → team.html and exec-summary.html
+FILE 1: index.html — scrollable interactive account deck (9 sections, users scroll through them)
+  • Section 1 — Hero: ${name} logo + Salesforce logo side by side (using ${name}'s brand color as background), key stats animated in, product pills
+  • Section 2 — Pain Points: 4 flip cards (front: their words from the notes, back: Salesforce solution). Click/tap to flip.
+  • Section 3 — Platform: one card per product, click to open right-side detail drawer
+  • Section 4 — Field Intelligence Flow: interactive 3-step diagram with Advance/Reset buttons
+  • Section 5 — Before/After: integration story naming the specific tools from their stack
+  • Section 6 — AI Architecture: clickable accordion — Data Layer → Data Cloud → Trust Layer → Agentforce → Apps
+  • Section 7 — Executive Dashboard: 3 tabs — renewal risk table, pipeline bar chart (Chart.js), win/loss doughnut
+  • Section 8: ${pe ? `PE portfolio value section for ${pe}` : 'Growth roadmap and platform section'}
+  • Section 9 — Next Steps: 90-day roadmap + two CTA buttons linking to team.html and exec-summary.html (relative paths)
 
 FILE 2: team.html — account team page with contact cards, initials avatars, mailto links, back link
 FILE 3: exec-summary.html — print-ready one-pager: Print/Save PDF button, 4 pillars, 30/60/90 timeline, team CTA
@@ -1118,15 +1128,15 @@ Build a POV deck for ${name} in the ${industry || 'their'} industry. Since we ha
 
 Generate THREE complete, self-contained HTML files:
 
-FILE 1: index.html — 8-slide discovery POV deck
-  • Slide 1: Hero — ${name} logo + Salesforce logo, bold industry challenge headline, product pills
-  • Slide 2: Industry landscape — 4 stat cards showing macro challenges companies like ${name} face (use real research)
-  • Slide 3: What we're seeing — 4 flip cards: common pain pattern in ${industry || 'their industry'} → how Salesforce addresses it
-  • Slide 4: Platform — one card per product, click to open right-side detail drawer
-  • Slide 5: Customer proof — 3 real Salesforce customer success stories from similar companies, with metrics
-  • Slide 6: AI + Data — what Agentforce and Data Cloud unlock for companies at their stage
-  • Slide 7: What fast looks like — a 90-day picture (not a commitment, just a vision)
-  • Slide 8: Let's talk — 3 discovery questions we'd love to explore + two CTA buttons → team.html and exec-summary.html
+FILE 1: index.html — scrollable discovery POV deck (8 sections, users scroll through them)
+  • Section 1 — Hero: ${name} logo + Salesforce logo side by side (using ${name}'s brand color as background), bold industry challenge headline, product pills
+  • Section 2 — Industry Landscape: 4 stat cards showing macro challenges companies like ${name} face (use real published research)
+  • Section 3 — What We're Seeing: 4 flip cards — common pain pattern in ${industry || 'their industry'} on the front, Salesforce solution on the back. Click/tap to flip.
+  • Section 4 — Platform: one card per product, click to open right-side detail drawer
+  • Section 5 — Customer Proof: 3 real Salesforce customer success stories from similar companies, with metrics
+  • Section 6 — AI + Data: what Agentforce and Data Cloud unlock for companies at their stage
+  • Section 7 — What Fast Looks Like: a 90-day vision (not a commitment)
+  • Section 8 — Let's Talk: 3 discovery questions we'd love to explore + two CTA buttons linking to team.html and exec-summary.html (relative paths)
 
 FILE 2: team.html — account team page with contact cards, initials avatars, mailto links, back link
 FILE 3: exec-summary.html — print-ready one-pager: industry challenge framing, 4 value pillars, next step CTA, team contact
@@ -1164,107 +1174,7 @@ function copyOutput() {
   });
 }
 
-/* ── File drop zone ── */
-let droppedFiles = [];
-
-function handleDragOver(e) {
-  e.preventDefault();
-  document.getElementById('drop-zone').classList.add('drag-over');
-}
-function handleDragLeave(e) {
-  document.getElementById('drop-zone').classList.remove('drag-over');
-}
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('drop-zone').classList.remove('drag-over');
-  addFiles(Array.from(e.dataTransfer.files));
-}
-function handleFileSelect(e) {
-  addFiles(Array.from(e.target.files));
-}
-
-function addFiles(files) {
-  files.forEach(f => {
-    if (!droppedFiles.find(x => x.name === f.name)) droppedFiles.push(f);
-  });
-  renderFileList();
-}
-
-function renderFileList() {
-  const listEl = document.getElementById('file-list');
-  const itemsEl = document.getElementById('file-items');
-  const actionsEl = document.getElementById('deploy-actions');
-
-  if (droppedFiles.length === 0) {
-    listEl.classList.remove('visible');
-    actionsEl.style.display = 'none';
-    return;
-  }
-  listEl.classList.add('visible');
-  actionsEl.style.display = 'flex';
-
-  itemsEl.innerHTML = droppedFiles.map((f, i) => `
-    <div class="file-item">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="file-item-name">${f.name}</span>
-      <span class="file-item-size">${formatSize(f.size)}</span>
-      <button class="file-remove" onclick="removeFile(${i})" title="Remove">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-  `).join('');
-}
-
-function removeFile(i) {
-  droppedFiles.splice(i, 1);
-  renderFileList();
-}
-function clearFiles() {
-  droppedFiles = [];
-  renderFileList();
-  document.getElementById('deploy-result').classList.remove('visible');
-  document.getElementById('file-input').value = '';
-}
-function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-  return (bytes/1024/1024).toFixed(1) + ' MB';
-}
-
-async function deployFiles() {
-  if (droppedFiles.length === 0) return;
-  const btn = document.getElementById('deploy-btn');
-  btn.disabled = true;
-  btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/></svg> Packaging...`;
-
-  try {
-    const zip = new JSZip();
-    for (const file of droppedFiles) {
-      const content = await file.arrayBuffer();
-      zip.file(file.name, content);
-    }
-    const blob = await zip.generateAsync({ type: 'blob' });
-
-    // Download the zip
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'customer-deck.zip';
-    a.click();
-    URL.revokeObjectURL(url);
-
-    // Open Netlify Drop
-    setTimeout(() => window.open('https://app.netlify.com/drop', '_blank'), 400);
-
-    document.getElementById('deploy-result').classList.add('visible');
-    document.getElementById('deploy-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  } catch (err) {
-    alert('Something went wrong packaging the files. Try again or drag your files directly to netlify.com/drop.');
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-linecap="round" stroke-linejoin="round"/></svg> Package &amp; Open Netlify Drop`;
-}
+/* Netlify functions removed — GitHub Pages is now the deploy method */
 </script>
 <style>
 @keyframes spin { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
