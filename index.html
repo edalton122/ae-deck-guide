@@ -6,6 +6,7 @@
   <title>AE Deck Kit | Salesforce</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -15,201 +16,351 @@
       --sf-light:  #EFF5FB;
       --sf-border: #D8E3F0;
       --text:      #181818;
-      --muted:     #444;
+      --muted:     #4B5563;
     }
     html { scroll-behavior: smooth; }
     body { font-family: 'Inter', sans-serif; color: var(--text); background: #F9FBFE; line-height: 1.6; }
 
     /* ── Nav ── */
     nav {
-      position: sticky; top: 0; z-index: 100;
+      position: sticky; top: 0; z-index: 200;
       background: var(--sf-dark);
       padding: 0 40px;
       display: flex; align-items: center; justify-content: space-between;
-      height: 60px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      height: 58px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
     }
-    .nav-logo { display: flex; align-items: center; gap: 14px; }
-    .nav-logo img { height: 28px; }
-    .nav-logo .divider { width: 1px; height: 22px; background: rgba(255,255,255,0.25); }
-    .nav-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 0.02em; }
-    .nav-links { display: flex; gap: 24px; }
-    .nav-links a { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s; }
-    .nav-links a:hover { color: white; }
+    .nav-left { display: flex; align-items: center; gap: 14px; }
+    .nav-left img { height: 26px; }
+    .nav-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.25); }
+    .nav-title { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.8); letter-spacing: 0.04em; }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-link { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.65); text-decoration: none; transition: color 0.2s; }
+    .nav-link:hover { color: white; }
+    .nav-cta { background: var(--sf-blue); color: white; font-size: 12px; font-weight: 700; padding: 7px 16px; border-radius: 7px; text-decoration: none; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.88; }
 
-    /* ── Hero ── */
+    /* ── HERO ── */
     .hero {
-      background: linear-gradient(135deg, var(--sf-dark) 0%, #0B4A8B 60%, #0176D3 100%);
-      padding: 72px 40px 64px;
+      background: linear-gradient(150deg, var(--sf-dark) 0%, #0B4A8B 55%, #0176D3 100%);
+      padding: 56px 40px 52px;
       text-align: center;
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
     .hero::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 30% 50%, rgba(1,118,211,0.3) 0%, transparent 60%),
-                  radial-gradient(ellipse at 70% 50%, rgba(46,132,74,0.15) 0%, transparent 60%);
+      background: radial-gradient(ellipse at 20% 60%, rgba(1,118,211,0.35) 0%, transparent 55%),
+                  radial-gradient(ellipse at 80% 40%, rgba(46,132,74,0.12) 0%, transparent 50%);
+      pointer-events: none;
     }
-    .hero-inner { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
-    .hero-badge {
+    .hero-inner { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
+
+    .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-      padding: 5px 16px; border-radius: 99px; font-size: 11px; font-weight: 700;
-      color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 0.08em;
-      margin-bottom: 24px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+      padding: 5px 14px; border-radius: 99px;
+      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85);
+      text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 20px;
     }
-    .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #72BF44; animation: pulse 2s infinite; }
+    .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: #34D399; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; color: white; letter-spacing: -0.03em; line-height: 1.08; margin-bottom: 18px; }
-    .hero h1 span { color: #7DD3FA; }
-    .hero p { font-size: 1.05rem; color: rgba(255,255,255,0.75); max-width: 580px; margin: 0 auto 36px; line-height: 1.7; }
-    .hero-cta {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: white; color: var(--sf-dark);
-      font-size: 14px; font-weight: 800;
-      padding: 13px 28px; border-radius: 10px;
-      text-decoration: none;
-      transition: transform 0.2s, opacity 0.2s;
+
+    .hero h1 {
+      font-size: clamp(2rem, 5.5vw, 3.4rem); font-weight: 900;
+      color: white; letter-spacing: -0.035em; line-height: 1.05;
+      margin-bottom: 16px;
     }
-    .hero-cta:hover { transform: translateY(-2px); opacity: 0.92; }
+    .hero h1 em { color: #7DD3FA; font-style: normal; }
+    .hero-sub {
+      font-size: 1rem; color: rgba(255,255,255,0.72);
+      max-width: 500px; margin: 0 auto 32px; line-height: 1.65;
+    }
 
-    /* ── Layout ── */
-    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    /* Impact stats row */
+    .hero-stats {
+      display: flex; justify-content: center; gap: 0; margin-bottom: 36px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px; overflow: hidden;
+      max-width: 580px; margin-left: auto; margin-right: auto;
+    }
+    .hero-stat { flex: 1; padding: 16px 14px; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat .val { font-size: 1.6rem; font-weight: 900; color: white; letter-spacing: -0.03em; line-height: 1; margin-bottom: 4px; }
+    .hero-stat .lbl { font-size: 10px; color: rgba(255,255,255,0.55); font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; line-height: 1.3; }
 
-    /* ── Why section ── */
-    .why { background: white; border-bottom: 1px solid var(--sf-border); padding: 64px 40px; }
-    .why-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
-    .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sf-blue); margin-bottom: 10px; }
-    .why h2 { font-size: 1.8rem; font-weight: 900; color: var(--sf-dark); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 16px; }
-    .why p { font-size: 0.92rem; color: var(--muted); line-height: 1.75; margin-bottom: 12px; }
-    .why-cards { display: flex; flex-direction: column; gap: 14px; }
-    .why-card { background: var(--sf-light); border-radius: 12px; padding: 16px 18px; border-left: 3px solid var(--sf-blue); }
-    .why-card strong { font-size: 13px; font-weight: 800; color: var(--sf-dark); display: block; margin-bottom: 4px; }
-    .why-card span { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-    /* ── What you need ── */
-    .needs { background: var(--sf-light); padding: 48px 40px; border-bottom: 1px solid var(--sf-border); }
-    .needs-inner { max-width: 900px; margin: 0 auto; }
-    .needs h2 { font-size: 1.4rem; font-weight: 900; color: var(--sf-dark); margin-bottom: 6px; }
-    .needs-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
-    .needs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .need-item { background: white; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid var(--sf-border); }
-    .need-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
-    .need-icon svg { width: 22px; height: 22px; }
-    .need-item strong { font-size: 13px; font-weight: 800; color: var(--sf-dark); display: block; margin-bottom: 4px; }
-    .need-item span { font-size: 11px; color: var(--muted); line-height: 1.5; }
-
-    /* ── Steps ── */
-    .steps { padding: 72px 40px; background: white; }
-    .steps-inner { max-width: 900px; margin: 0 auto; }
-    .steps-header { text-align: center; margin-bottom: 56px; }
-    .steps-header h2 { font-size: 1.8rem; font-weight: 900; color: var(--sf-dark); letter-spacing: -0.025em; margin-bottom: 8px; }
-    .steps-header p { font-size: 0.92rem; color: var(--muted); }
-
-    .step { display: flex; gap: 28px; margin-bottom: 40px; align-items: flex-start; }
-    .step:last-child { margin-bottom: 0; }
-    .step-num {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--sf-blue), var(--sf-dark));
-      color: white; font-size: 16px; font-weight: 900;
+    /* Browser mockup */
+    .browser-wrap { margin: 0 auto 36px; max-width: 680px; }
+    .browser-chrome {
+      background: #1E293B; border-radius: 12px 12px 0 0;
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .browser-dots { display: flex; gap: 5px; }
+    .browser-dots span { width: 10px; height: 10px; border-radius: 50%; }
+    .browser-dots span:nth-child(1) { background: #EF4444; }
+    .browser-dots span:nth-child(2) { background: #F59E0B; }
+    .browser-dots span:nth-child(3) { background: #22C55E; }
+    .browser-url {
+      flex: 1; background: rgba(255,255,255,0.07); border-radius: 5px;
+      padding: 4px 10px; font-size: 10.5px; font-family: monospace; color: rgba(255,255,255,0.55);
+    }
+    .browser-screen {
+      background: linear-gradient(135deg, #032D60, #0176D3);
+      aspect-ratio: 16/7; border-radius: 0 0 12px 12px;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; margin-top: 2px;
+      position: relative; overflow: hidden;
     }
-    .step-body { flex: 1; }
-    .step-body h3 { font-size: 1.05rem; font-weight: 800; color: var(--sf-dark); margin-bottom: 6px; }
-    .step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 10px; }
-    .step-body ul { padding-left: 18px; }
-    .step-body ul li { font-size: 0.85rem; color: var(--muted); line-height: 1.65; margin-bottom: 4px; }
-    .step-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; padding: 3px 10px; border-radius: 6px; margin-bottom: 8px; }
-    .tag-blue { background: #DBEAFE; color: #1E3A8A; }
-    .tag-green { background: #DCFCE7; color: #14532D; }
-    .tag-orange { background: #FEF3C7; color: #78350F; }
-
-    .step-connector { width: 2px; height: 28px; background: linear-gradient(to bottom, var(--sf-blue), var(--sf-border)); margin-left: 21px; margin-bottom: -4px; }
-
-    /* ── Prompt box ── */
-    .prompt-section { padding: 72px 40px; background: var(--sf-light); border-top: 1px solid var(--sf-border); border-bottom: 1px solid var(--sf-border); }
-    .prompt-inner { max-width: 900px; margin: 0 auto; }
-    .prompt-header { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
-    .prompt-header-left h2 { font-size: 1.5rem; font-weight: 900; color: var(--sf-dark); margin-bottom: 6px; }
-    .prompt-header-left p { font-size: 13px; color: var(--muted); max-width: 520px; line-height: 1.6; }
-    .copy-btn {
-      display: flex; align-items: center; gap: 7px;
-      background: var(--sf-blue); color: white;
-      border: none; padding: 10px 20px; border-radius: 9px;
-      font-size: 13px; font-weight: 700; cursor: pointer;
-      transition: opacity 0.2s; white-space: nowrap; flex-shrink: 0;
+    .browser-screen::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url('https://usgwater.com/wp-content/uploads/2023/10/water-tanks-in-the-mountains.jpg') center/cover;
+      opacity: 0.1;
     }
-    .copy-btn:hover { opacity: 0.88; }
-    .copy-btn.copied { background: var(--sf-green); }
-    .prompt-box {
-      background: #0F172A; border-radius: 14px; padding: 28px 32px;
-      font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
-      font-size: 12.5px; line-height: 1.75; color: #E2E8F0;
-      max-height: 520px; overflow-y: auto;
+    .browser-preview-inner {
+      position: relative; z-index: 1; text-align: center; padding: 20px;
+    }
+    .preview-chips { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .preview-chip {
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      color: white; font-size: 10px; font-weight: 700;
+      padding: 3px 10px; border-radius: 99px; letter-spacing: 0.04em;
+    }
+    .preview-title { font-size: clamp(1rem, 2.5vw, 1.5rem); font-weight: 900; color: white; margin-bottom: 12px; line-height: 1.15; }
+    .preview-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: white; color: var(--sf-dark);
+      font-size: 12px; font-weight: 800;
+      padding: 9px 20px; border-radius: 8px;
+      text-decoration: none; transition: transform 0.2s;
+    }
+    .preview-btn:hover { transform: translateY(-1px); }
+    .preview-mobile-note {
+      margin-top: 10px; font-size: 10px; color: rgba(255,255,255,0.5); font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+
+    .hero-down { color: rgba(255,255,255,0.4); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .hero-down svg { animation: bounce 2s ease-in-out infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(6px)} }
+
+    /* ── SECTION HELPERS ── */
+    .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sf-blue); margin-bottom: 8px; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 32px; }
+    hr.divider { border: none; border-top: 1px solid var(--sf-border); margin: 0; }
+
+    /* ── HOW IT WORKS (3 steps) ── */
+    .how { background: white; padding: 64px 32px; }
+    .how-inner { max-width: 900px; margin: 0 auto; }
+    .how-header { text-align: center; margin-bottom: 44px; }
+    .how-header h2 { font-size: 1.7rem; font-weight: 900; color: var(--sf-dark); letter-spacing: -0.025em; margin-bottom: 8px; }
+    .how-header p { font-size: 0.9rem; color: var(--muted); }
+
+    .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
+    .how-card { background: var(--sf-light); border-radius: 16px; padding: 28px 24px; border: 1px solid var(--sf-border); text-align: center; position: relative; overflow: hidden; }
+    .how-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .how-card:nth-child(1)::before { background: var(--sf-blue); }
+    .how-card:nth-child(2)::before { background: var(--sf-green); }
+    .how-card:nth-child(3)::before { background: #E65C00; }
+    .how-step-num { width: 36px; height: 36px; border-radius: 50%; font-size: 14px; font-weight: 900; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+    .how-card h3 { font-size: 1rem; font-weight: 800; color: var(--sf-dark); margin-bottom: 6px; }
+    .how-card p { font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
+    .how-arrow { display: flex; align-items: center; justify-content: center; color: var(--sf-border); font-size: 1.5rem; }
+
+    /* ── PROMPT BUILDER ── */
+    .builder { background: var(--sf-light); padding: 72px 32px; border-top: 1px solid var(--sf-border); }
+    .builder-inner { max-width: 900px; margin: 0 auto; }
+    .builder-header { margin-bottom: 32px; }
+    .builder-header h2 { font-size: 1.6rem; font-weight: 900; color: var(--sf-dark); letter-spacing: -0.025em; margin-bottom: 8px; }
+    .builder-header p { font-size: 0.9rem; color: var(--muted); max-width: 540px; line-height: 1.65; }
+
+    .builder-note {
+      background: #FEF9C3; border: 1px solid #FDE68A; border-radius: 10px;
+      padding: 12px 16px; margin-bottom: 28px;
+      font-size: 12px; color: #78350F; line-height: 1.6;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .builder-note svg { flex-shrink: 0; margin-top: 1px; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group.full { grid-column: 1/-1; }
+    .form-group label { font-size: 11px; font-weight: 700; color: var(--sf-dark); text-transform: uppercase; letter-spacing: 0.06em; }
+    .form-group input, .form-group textarea, .form-group select {
+      padding: 10px 13px; border: 1.5px solid var(--sf-border);
+      border-radius: 9px; font-size: 13px; font-family: 'Inter', sans-serif;
+      background: white; color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none; border-color: var(--sf-blue);
+      box-shadow: 0 0 0 3px rgba(1,118,211,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-group small { font-size: 11px; color: #9CA3AF; line-height: 1.4; }
+
+    .products-check { display: flex; flex-wrap: wrap; gap: 8px; }
+    .product-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: white; border: 1.5px solid var(--sf-border);
+      padding: 5px 12px; border-radius: 99px;
+      font-size: 11px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; user-select: none; color: var(--muted);
+    }
+    .product-pill.selected { background: var(--sf-blue); border-color: var(--sf-blue); color: white; }
+    .product-pill input { display: none; }
+
+    .team-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    .build-btn {
+      width: 100%; margin-top: 8px;
+      background: linear-gradient(135deg, var(--sf-dark), var(--sf-blue));
+      color: white; font-size: 15px; font-weight: 800;
+      border: none; padding: 15px 28px; border-radius: 11px;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .build-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* Output area */
+    .prompt-output { margin-top: 28px; display: none; }
+    .prompt-output.visible { display: block; }
+    .prompt-output-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px; flex-wrap: wrap; gap: 12px;
+    }
+    .prompt-output-header h3 { font-size: 1rem; font-weight: 800; color: var(--sf-dark); }
+    .output-actions { display: flex; gap: 10px; }
+    .action-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: 8px;
+      font-size: 12px; font-weight: 700; border: none; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .action-btn:hover { opacity: 0.85; }
+    .btn-copy { background: var(--sf-blue); color: white; }
+    .btn-copy.copied { background: var(--sf-green); }
+    .btn-gemini { background: white; color: var(--sf-dark); border: 1.5px solid var(--sf-border); text-decoration: none; }
+    .prompt-output-box {
+      background: #0F172A; border-radius: 12px; padding: 24px 28px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px; line-height: 1.75; color: #CBD5E1;
+      max-height: 420px; overflow-y: auto;
       white-space: pre-wrap; word-break: break-word;
-      border: 1px solid rgba(255,255,255,0.06);
     }
-    .prompt-box::-webkit-scrollbar { width: 5px; }
-    .prompt-box::-webkit-scrollbar-track { background: transparent; }
-    .prompt-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
-    .prompt-note { margin-top: 14px; font-size: 12px; color: #6B7280; line-height: 1.6; }
-    .prompt-note strong { color: var(--sf-dark); }
+    .prompt-output-box::-webkit-scrollbar { width: 4px; }
+    .prompt-output-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+    .prompt-success {
+      margin-top: 12px; background: #DCFCE7; border: 1px solid #86EFAC;
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 12px; color: #14532D; font-weight: 600;
+    }
 
-    /* ── Netlify steps ── */
-    .netlify { padding: 64px 40px; background: white; border-bottom: 1px solid var(--sf-border); }
-    .netlify-inner { max-width: 900px; margin: 0 auto; }
-    .netlify h2 { font-size: 1.5rem; font-weight: 900; color: var(--sf-dark); margin-bottom: 6px; }
-    .netlify-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
-    .netlify-steps { display: flex; flex-direction: column; gap: 16px; }
-    .netlify-step { display: flex; gap: 16px; align-items: flex-start; background: var(--sf-light); border-radius: 12px; padding: 18px 20px; border: 1px solid var(--sf-border); }
-    .netlify-step-num { width: 30px; height: 30px; background: var(--sf-dark); color: white; border-radius: 50%; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .netlify-step-body strong { font-size: 13px; font-weight: 800; color: var(--sf-dark); display: block; margin-bottom: 3px; }
-    .netlify-step-body span { font-size: 12px; color: var(--muted); line-height: 1.6; }
-    .netlify-step-body a { color: var(--sf-blue); font-weight: 700; }
-    .netlify-url { display: inline-block; background: #F3F4F6; border-radius: 6px; padding: 3px 10px; font-family: monospace; font-size: 12px; color: var(--sf-dark); margin-top: 4px; }
+    /* ── DEPLOY ZONE ── */
+    .deploy { background: white; padding: 72px 32px; border-top: 1px solid var(--sf-border); }
+    .deploy-inner { max-width: 900px; margin: 0 auto; }
+    .deploy-header { margin-bottom: 28px; }
+    .deploy-header h2 { font-size: 1.6rem; font-weight: 900; color: var(--sf-dark); letter-spacing: -0.025em; margin-bottom: 8px; }
+    .deploy-header p { font-size: 0.9rem; color: var(--muted); max-width: 540px; line-height: 1.65; }
 
-    /* ── Tips ── */
-    .tips { padding: 56px 40px; background: var(--sf-light); border-bottom: 1px solid var(--sf-border); }
+    .drop-zone {
+      border: 2.5px dashed var(--sf-border); border-radius: 16px;
+      padding: 52px 32px; text-align: center; cursor: pointer;
+      transition: all 0.25s ease; background: var(--sf-light);
+      position: relative;
+    }
+    .drop-zone.drag-over {
+      border-color: var(--sf-blue); background: #EBF5FF;
+      transform: scale(1.01);
+    }
+    .drop-zone input[type="file"] { display: none; }
+    .drop-icon { width: 56px; height: 56px; background: linear-gradient(135deg, var(--sf-blue), var(--sf-dark)); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .drop-icon svg { width: 28px; height: 28px; stroke: white; }
+    .drop-zone h3 { font-size: 1.05rem; font-weight: 800; color: var(--sf-dark); margin-bottom: 6px; }
+    .drop-zone p { font-size: 13px; color: var(--muted); }
+    .drop-browse { color: var(--sf-blue); font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+    /* File list */
+    .file-list { margin-top: 24px; display: none; }
+    .file-list.visible { display: block; }
+    .file-list-header { font-size: 12px; font-weight: 700; color: var(--sf-dark); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+    .file-item {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--sf-light); border: 1px solid var(--sf-border);
+      border-radius: 9px; padding: 10px 14px; margin-bottom: 6px;
+    }
+    .file-item svg { flex-shrink: 0; color: var(--sf-blue); }
+    .file-item-name { font-size: 13px; font-weight: 600; color: var(--sf-dark); flex: 1; }
+    .file-item-size { font-size: 11px; color: var(--muted); }
+    .file-remove { background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 2px; transition: color 0.2s; }
+    .file-remove:hover { color: #EF4444; }
+
+    .deploy-actions { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .deploy-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 13px 24px; border-radius: 10px;
+      font-size: 14px; font-weight: 800; border: none; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .deploy-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .deploy-btn-primary { background: linear-gradient(135deg, var(--sf-dark), var(--sf-blue)); color: white; }
+    .deploy-btn-clear { background: white; color: var(--muted); border: 1.5px solid var(--sf-border); }
+    .deploy-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .deploy-result {
+      margin-top: 20px; display: none;
+      background: #DCFCE7; border: 1px solid #86EFAC; border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .deploy-result.visible { display: block; }
+    .deploy-result h4 { font-size: 13px; font-weight: 800; color: #14532D; margin-bottom: 6px; }
+    .deploy-result p { font-size: 12px; color: #166534; line-height: 1.6; }
+    .deploy-result .open-netlify-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--sf-green); color: white;
+      font-size: 12px; font-weight: 700;
+      padding: 9px 18px; border-radius: 8px;
+      text-decoration: none; margin-top: 12px;
+      transition: opacity 0.2s;
+    }
+    .deploy-result .open-netlify-btn:hover { opacity: 0.88; }
+
+    /* ── TIPS ── */
+    .tips { background: var(--sf-light); padding: 56px 32px; border-top: 1px solid var(--sf-border); }
     .tips-inner { max-width: 900px; margin: 0 auto; }
     .tips h2 { font-size: 1.3rem; font-weight: 900; color: var(--sf-dark); margin-bottom: 20px; }
     .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .tip { background: white; border-radius: 10px; padding: 16px 18px; border: 1px solid var(--sf-border); }
-    .tip-icon { font-size: 18px; margin-bottom: 7px; }
-    .tip strong { font-size: 12px; font-weight: 800; color: var(--sf-dark); display: block; margin-bottom: 3px; }
-    .tip span { font-size: 11.5px; color: var(--muted); line-height: 1.55; }
+    .tip { background: white; border-radius: 10px; padding: 18px 20px; border: 1px solid var(--sf-border); }
+    .tip-icon { font-size: 20px; margin-bottom: 8px; }
+    .tip strong { font-size: 13px; font-weight: 800; color: var(--sf-dark); display: block; margin-bottom: 3px; }
+    .tip span { font-size: 12px; color: var(--muted); line-height: 1.6; }
 
-    /* ── Example ── */
-    .example { padding: 56px 40px; background: white; border-bottom: 1px solid var(--sf-border); }
-    .example-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-    .example h2 { font-size: 1.3rem; font-weight: 900; color: var(--sf-dark); margin-bottom: 8px; }
-    .example p { font-size: 13px; color: var(--muted); line-height: 1.65; max-width: 500px; }
-    .example-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--sf-blue); color: white; font-size: 13px; font-weight: 700; padding: 11px 22px; border-radius: 9px; text-decoration: none; transition: opacity 0.2s; white-space: nowrap; }
-    .example-btn:hover { opacity: 0.88; }
-
-    /* ── Footer ── */
+    /* ── FOOTER ── */
     footer { background: var(--sf-dark); padding: 36px 40px; text-align: center; }
-    footer p { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.7; }
-    footer strong { color: rgba(255,255,255,0.7); }
-    footer a { color: rgba(255,255,255,0.6); }
+    footer p { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.8; }
+    footer strong { color: rgba(255,255,255,0.75); }
+    footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+    footer a:hover { color: white; }
 
-    /* ── Mobile ── */
-    @media (max-width: 700px) {
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
       nav { padding: 0 20px; }
-      .nav-links { display: none; }
-      .hero { padding: 52px 24px 44px; }
-      .why { padding: 44px 24px; }
-      .why-inner { grid-template-columns: 1fr; gap: 28px; }
-      .needs { padding: 40px 24px; }
-      .needs-grid { grid-template-columns: 1fr; }
-      .steps { padding: 48px 24px; }
-      .prompt-section { padding: 48px 24px; }
-      .prompt-box { font-size: 11px; padding: 20px; max-height: 380px; }
-      .netlify { padding: 44px 24px; }
-      .tips { padding: 40px 24px; }
+      .nav-right .nav-link { display: none; }
+      .hero { padding: 44px 24px 40px; }
+      .hero h1 { font-size: 2rem; }
+      .hero-stats { max-width: 100%; }
+      .how { padding: 48px 24px; }
+      .how-grid { grid-template-columns: 1fr; gap: 16px; }
+      .how-arrow { display: none; }
+      .builder { padding: 48px 24px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .team-row { grid-template-columns: 1fr; }
+      .deploy { padding: 48px 24px; }
+      .deploy-actions { flex-direction: column; }
+      .deploy-btn { justify-content: center; }
+      .tips { padding: 44px 24px; }
       .tips-grid { grid-template-columns: 1fr; }
-      .example { padding: 40px 24px; }
       footer { padding: 28px 24px; }
     }
   </style>
@@ -218,409 +369,589 @@
 
 <!-- Nav -->
 <nav>
-  <div class="nav-logo">
+  <div class="nav-left">
     <img src="https://wp.sfdcdigital.com/en-us/wp-content/uploads/sites/4/2024/11/logo-salesforce.svg" alt="Salesforce"/>
-    <div class="divider"></div>
+    <div class="nav-divider"></div>
     <span class="nav-title">AE Deck Kit</span>
   </div>
-  <div class="nav-links">
-    <a href="#why">Why This Works</a>
-    <a href="#steps">How To Use It</a>
-    <a href="#prompt">The Prompt</a>
-    <a href="#publish">Publishing</a>
-    <a href="#example">See an Example</a>
+  <div class="nav-right">
+    <a href="#builder" class="nav-link">Build Yours</a>
+    <a href="#deploy" class="nav-link">Publish</a>
+    <a href="https://edalton122.github.io/usg-water-salesforce-revenue-engine/" target="_blank" class="nav-cta">Live Example ↗</a>
   </div>
 </nav>
 
-<!-- Hero -->
+<!-- ═══════════ HERO ═══════════ -->
 <section class="hero">
   <div class="hero-inner">
-    <div class="hero-badge">
+
+    <div class="hero-eyebrow">
       <span class="dot"></span>
-      Internal Salesforce Resource
+      Internal · Salesforce Account Team Resource
     </div>
-    <h1>Build Executive Customer Decks<br/><span>in 15 Minutes with Gemini</span></h1>
-    <p>A copy-paste workflow for AEs to generate a fully branded, interactive web presentation for any customer — no design tools, no coding, no GitHub required.</p>
-    <a href="#steps" class="hero-cta">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Get Started
+
+    <h1>Stop Sending PDFs.<br/><em>Send This Instead.</em></h1>
+    <p class="hero-sub">A live, branded, interactive web deck your customer opens on any device — built from your call notes in 15 minutes, no design skills needed.</p>
+
+    <!-- Stats -->
+    <div class="hero-stats" style="margin-bottom:28px;">
+      <div class="hero-stat">
+        <div class="val">15<span style="font-size:1rem;">min</span></div>
+        <div class="lbl">Start to<br/>shareable URL</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">0</div>
+        <div class="lbl">Design skills<br/>required</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">📱</div>
+        <div class="lbl">Works on any<br/>device</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">∞</div>
+        <div class="lbl">Customers<br/>you can build for</div>
+      </div>
+    </div>
+
+    <!-- Browser mockup of live deck -->
+    <div class="browser-wrap">
+      <div class="browser-chrome">
+        <div class="browser-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="browser-url">edalton122.github.io/usg-water-salesforce-revenue-engine/</div>
+      </div>
+      <div class="browser-screen">
+        <div class="browser-preview-inner">
+          <div class="preview-chips">
+            <span class="preview-chip">Sales Cloud</span>
+            <span class="preview-chip">Field Service</span>
+            <span class="preview-chip">Agentforce</span>
+            <span class="preview-chip">Data Cloud</span>
+          </div>
+          <div class="preview-title">USG Water Solutions<br/>Unified AI & PE Revenue Engine</div>
+          <a href="https://edalton122.github.io/usg-water-salesforce-revenue-engine/" target="_blank" class="preview-btn">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 3h6v6M9 15L21 3M21 12v9H3V3h9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Open Live Example
+          </a>
+          <div class="preview-mobile-note">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+            Mobile-ready — open this on your phone right now
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="#builder" class="hero-down" style="text-decoration:none;">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Build yours ↓
     </a>
+
   </div>
 </section>
 
-<!-- Why -->
-<section class="why" id="why">
-  <div class="why-inner">
-    <div>
-      <div class="section-label">The Context</div>
-      <h2>Why We Build These Decks</h2>
-      <p>A PDF deck is forgettable. A live, interactive web deck that the customer can open from any device, share internally, and revisit on their own timeline — that's a different conversation.</p>
-      <p>These decks are built around the customer's actual brand, their specific pain points from your discovery call, and the exact Salesforce products relevant to their deal. No generic slides. No filler. Every word earned from the transcript.</p>
-      <p>The goal is to send a prospect a link — not an attachment — that looks like it was built by a full creative agency, in a single afternoon.</p>
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="how-header">
+      <div class="section-label">The Process</div>
+      <h2>Three Steps. Fifteen Minutes. One Link.</h2>
+      <p>No GitHub, no coding, no design tools. Just Gemini and a browser you already have.</p>
     </div>
-    <div class="why-cards">
-      <div class="why-card">
-        <strong>Branded to the customer</strong>
-        <span>Colors, logo, and imagery pulled directly from the customer's own website. Looks like it was made for them — because it was.</span>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-step-num" style="background:var(--sf-blue);">1</div>
+        <h3>Fill In Your Customer</h3>
+        <p>Use the form below. Paste your call transcript, pick the Salesforce products, and add your team. The form writes your Gemini prompt for you — personalized and pre-filled.</p>
       </div>
-      <div class="why-card">
-        <strong>Interactive, not static</strong>
-        <span>Flip cards, clickable product details, an animated roadmap, and a live dashboard mockup. Customers explore it, they don't just scroll past it.</span>
+      <div class="how-card">
+        <div class="how-step-num" style="background:var(--sf-green);">2</div>
+        <h3>Paste Into Gemini</h3>
+        <p>Copy your personalized prompt with one click, open Gemini, paste it in. Gemini reads your notes and generates three complete HTML files. No back-and-forth.</p>
       </div>
-      <div class="why-card">
-        <strong>Shareable in seconds</strong>
-        <span>A public URL they can forward to their CFO, their PE firm, or their board. Nothing to download, nothing to install.</span>
-      </div>
-      <div class="why-card">
-        <strong>Built from your call notes</strong>
-        <span>Gemini reads your transcript or meeting notes and extracts the pain points, the stats, and the language the customer used themselves.</span>
+      <div class="how-card">
+        <div class="how-step-num" style="background:#E65C00;">3</div>
+        <h3>Drop Files. Get a URL.</h3>
+        <p>Drag the HTML files into the deploy zone below. We package them and open Netlify. One drag, one drop — and you have a shareable link ready to send.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- What you need -->
-<section class="needs" id="needs">
-  <div class="needs-inner">
-    <div class="section-label">Prerequisites</div>
-    <h2>What You Need</h2>
-    <p class="needs-sub">That's it. No coding, no design tools, no special accounts beyond what you already have.</p>
-    <div class="needs-grid">
-      <div class="need-item">
-        <div class="need-icon" style="background:#E8F4FD;">
-          <svg fill="none" viewBox="0 0 24 24" stroke="#0176D3" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<hr class="divider"/>
+
+<!-- ═══════════ PROMPT BUILDER ═══════════ -->
+<section class="builder" id="builder">
+  <div class="builder-inner">
+    <div class="builder-header">
+      <div class="section-label">Step 1 — Build Your Prompt</div>
+      <h2>Fill In Your Customer. We Write the Prompt.</h2>
+      <p>Complete the fields below and click "Generate My Gemini Prompt." You'll get a fully personalized prompt ready to paste — no questions back from Gemini, just output.</p>
+    </div>
+
+    <div class="builder-note">
+      <svg width="16" height="16" fill="none" stroke="#92400E" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span><strong>Why this beats copying a generic prompt:</strong> The form pre-fills your customer's name, pain points, products, and team directly into the prompt. Gemini skips the Q&amp;A and jumps straight to building the deck. Saves 5–10 minutes of back-and-forth.</span>
+    </div>
+
+    <form id="deck-form" onsubmit="return false;">
+      <!-- Row 1 -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Customer Company Name *</label>
+          <input type="text" id="f-name" placeholder="e.g. Acme Water Corp" required/>
         </div>
-        <strong>Gemini (via Google Workspace)</strong>
-        <span>You already have access through Salesforce's Google Workspace license. Go to gemini.google.com.</span>
-      </div>
-      <div class="need-item">
-        <div class="need-icon" style="background:#E8F5E9;">
-          <svg fill="none" viewBox="0 0 24 24" stroke="#2E844A" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="form-group">
+          <label>Customer Website *</label>
+          <input type="url" id="f-website" placeholder="https://acmewatercorp.com" required/>
         </div>
-        <strong>Your Call Notes or Transcript</strong>
-        <span>A raw paste of your discovery call transcript or meeting notes. The messier the better — Gemini handles it.</span>
-      </div>
-      <div class="need-item">
-        <div class="need-icon" style="background:#FFF3E0;">
-          <svg fill="none" viewBox="0 0 24 24" stroke="#E65C00" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="form-group">
+          <label>Short Name / Abbreviation</label>
+          <input type="text" id="f-short" placeholder="e.g. Acme"/>
+          <small>Used in slide headlines — leave blank to use full name</small>
         </div>
-        <strong>About 15 Minutes</strong>
-        <span>5 minutes to answer Gemini's questions. 5 minutes to copy the output. 2 minutes to publish. Done.</span>
+        <div class="form-group">
+          <label>PE / Investor Firm</label>
+          <input type="text" id="f-pe" placeholder="e.g. Blackstone Growth (or leave blank)"/>
+        </div>
+        <div class="form-group">
+          <label>Field / Service Team Size</label>
+          <input type="text" id="f-crews" placeholder="e.g. 200+ field technicians"/>
+        </div>
+        <div class="form-group">
+          <label>Geographic Footprint</label>
+          <input type="text" id="f-geo" placeholder="e.g. 32 states across the Southeast"/>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
 
-<!-- Steps -->
-<section class="steps" id="steps">
-  <div class="steps-inner">
-    <div class="steps-header">
-      <div class="section-label" style="text-align:center;">The Workflow</div>
-      <h2>Step-by-Step: From Call Notes to Live URL</h2>
-      <p>Follow these steps exactly. You'll have a shareable link before your next meeting.</p>
-    </div>
-
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <div class="step-tag tag-blue">Before You Start</div>
-        <h3>Gather Your Customer Information</h3>
-        <p>Have the following ready before opening Gemini. The more detail you provide, the better the deck:</p>
-        <ul>
-          <li>Customer company name and their website URL</li>
-          <li>Your call transcript or meeting notes (raw copy-paste is fine)</li>
-          <li>The Salesforce products relevant to this deal (e.g. Sales Cloud, Field Service, Data Cloud)</li>
-          <li>What marketing/CRM tools they currently use (e.g. HubSpot, Marketo, Oracle)</li>
-          <li>PE firm or investor name, if applicable</li>
-          <li>Your name, your SE's name, and your RVP's name + email addresses</li>
-          <li>Any headshot photos you want to include (optional — can upload directly to Gemini)</li>
-        </ul>
+      <!-- Products -->
+      <div class="form-group full" style="margin-bottom:16px;">
+        <label>Salesforce Products (select all relevant)</label>
+        <div class="products-check" id="products-check">
+          <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="Sales Cloud"/>Sales Cloud</label>
+          <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="Field Service Mobile"/>Field Service Mobile</label>
+          <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="Data Cloud"/>Data Cloud</label>
+          <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="Agentforce"/>Agentforce</label>
+          <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="Tableau"/>Tableau</label>
+          <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="Revenue Cloud"/>Revenue Cloud</label>
+          <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="Service Cloud"/>Service Cloud</label>
+          <label class="product-pill" onclick="togglePill(this)"><input type="checkbox" value="HubSpot Integration"/>HubSpot Integration</label>
+        </div>
       </div>
-    </div>
 
-    <div class="step-connector"></div>
-
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <div class="step-tag tag-blue">In Gemini</div>
-        <h3>Copy the Master Prompt and Paste It Into Gemini</h3>
-        <p>Open <a href="https://gemini.google.com" target="_blank" style="color:var(--sf-blue);font-weight:700;">gemini.google.com</a>, start a new conversation, and paste the entire prompt from the <a href="#prompt" style="color:var(--sf-blue);font-weight:700;">section below</a>. Do not change anything in the prompt — just paste it as-is.</p>
-        <p>Gemini will respond by asking you a series of questions about the customer. Answer them one by one, or all at once if you prefer.</p>
+      <!-- Tech stack + notes -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Current Tech Stack</label>
+          <input type="text" id="f-tech" placeholder="e.g. Uses HubSpot (loves it), Oracle ERP, Snowflake"/>
+          <small>Important: any tool they love, we KEEP — Salesforce integrates, doesn't replace</small>
+        </div>
+        <div class="form-group">
+          <label>Next Meeting / Target Date</label>
+          <input type="text" id="f-date" placeholder="e.g. October 2026, Q4 2026"/>
+        </div>
+        <div class="form-group full">
+          <label>Call Transcript or Meeting Notes *</label>
+          <textarea id="f-notes" placeholder="Paste your full call transcript or meeting notes here. The messier the better — Gemini will extract the pain points, stats, and your customer's own language." required></textarea>
+        </div>
       </div>
-    </div>
 
-    <div class="step-connector"></div>
-
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <div class="step-tag tag-blue">In Gemini</div>
-        <h3>Answer Gemini's Questions</h3>
-        <p>Gemini will ask for your customer's details. Paste your call notes when it asks — it will extract the pain points on its own. Key things to provide clearly:</p>
-        <ul>
-          <li>The customer's website URL (so Gemini can suggest brand colors)</li>
-          <li>Your full call transcript or meeting notes</li>
-          <li>Which Salesforce products to feature</li>
-          <li>Your account team details</li>
-        </ul>
-        <p>When Gemini is done asking questions, it will generate the full HTML file. This may take 1–2 minutes.</p>
+      <!-- Account team -->
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Account Team</label>
       </div>
-    </div>
-
-    <div class="step-connector"></div>
-
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <div class="step-tag tag-orange">Save the File</div>
-        <h3>Save Gemini's Output as index.html</h3>
-        <p>Gemini will output a large block of code. Here's how to save it:</p>
-        <ul>
-          <li>Click the copy icon on Gemini's code block (or select all and copy)</li>
-          <li>Open a plain text editor (TextEdit on Mac, Notepad on Windows)</li>
-          <li>Paste the code</li>
-          <li>Save the file as <strong>index.html</strong> (make sure the file extension is <code style="background:#F3F4F6;padding:1px 6px;border-radius:4px;font-size:11px;">.html</code>, not <code style="background:#F3F4F6;padding:1px 6px;border-radius:4px;font-size:11px;">.txt</code>)</li>
-        </ul>
+      <div class="team-row" style="margin-bottom:16px;">
+        <div class="form-group">
+          <input type="text" id="f-ae-name" placeholder="AE Name"/>
+          <input type="text" id="f-ae-title" placeholder="AE Title" style="margin-top:8px;"/>
+          <input type="email" id="f-ae-email" placeholder="AE Email" style="margin-top:8px;"/>
+        </div>
+        <div class="form-group">
+          <input type="text" id="f-se-name" placeholder="SE Name"/>
+          <input type="text" id="f-se-title" placeholder="SE Title" style="margin-top:8px;"/>
+          <input type="email" id="f-se-email" placeholder="SE Email" style="margin-top:8px;"/>
+        </div>
+        <div class="form-group">
+          <input type="text" id="f-rvp-name" placeholder="RVP Name"/>
+          <input type="text" id="f-rvp-title" placeholder="RVP Title" style="margin-top:8px;"/>
+          <input type="email" id="f-rvp-email" placeholder="RVP Email" style="margin-top:8px;"/>
+        </div>
       </div>
-    </div>
 
-    <div class="step-connector"></div>
-
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-body">
-        <div class="step-tag tag-green">Publishing</div>
-        <h3>Drag Your File to Netlify Drop</h3>
-        <p>Netlify Drop gives you a public URL instantly — no account, no setup. See the <a href="#publish" style="color:var(--sf-blue);font-weight:700;">Publishing section below</a> for the exact steps. Takes under 2 minutes.</p>
-      </div>
-    </div>
-
-    <div class="step-connector"></div>
-
-    <div class="step">
-      <div class="step-num">6</div>
-      <div class="step-body">
-        <div class="step-tag tag-green">Done</div>
-        <h3>Share the Link</h3>
-        <p>Netlify gives you a URL like <span style="font-family:monospace;background:#F3F4F6;padding:2px 8px;border-radius:5px;font-size:12px;">crisp-fox-a1b2.netlify.app</span>. You can share this directly or create a free Netlify account to get a cleaner URL. Send it to the customer, copy it into Salesforce, or drop it in Slack.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- Prompt -->
-<section class="prompt-section" id="prompt">
-  <div class="prompt-inner">
-    <div class="prompt-header">
-      <div class="prompt-header-left">
-        <div class="section-label">The Master Prompt</div>
-        <h2>Copy This Entire Block Into Gemini</h2>
-        <p>Select all the text in the box below, copy it, and paste it as your first message in a new Gemini conversation. Do not modify it.</p>
-      </div>
-      <button class="copy-btn" onclick="copyPrompt(this)">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Copy Prompt
+      <button class="build-btn" onclick="buildPrompt()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Generate My Gemini Prompt
       </button>
-    </div>
+    </form>
 
-    <div class="prompt-box" id="prompt-text">You are a senior Salesforce solutions architect and executive communication specialist. Your job is to generate a fully branded, interactive HTML executive sales deck for a Salesforce customer account — a live web presentation the AE can share as a URL.
-
-Before generating anything, ask me for the following information one section at a time:
-
-SECTION 1 — Customer basics:
-- What is the customer's full company name?
-- What is their website URL? (You'll use this to suggest brand colors.)
-- Do they have a PE or private equity firm investor? If yes, who?
-- What states or regions do they operate in, and roughly how many field/service employees do they have?
-
-SECTION 2 — Discovery call notes:
-- Please paste your full call transcript or meeting notes. I will extract the 4 main pain points, relevant statistics, and the customer's own language from this.
-
-SECTION 3 — Salesforce products:
-- Which Salesforce products are relevant to this deal? (e.g. Sales Cloud, Field Service Mobile, Data Cloud, Agentforce, Tableau)
-- What marketing or CRM tools do they currently use and like? (e.g. HubSpot, Marketo, Oracle — important: I will NOT suggest replacing tools they love)
-
-SECTION 4 — Account team:
-- AE name, title, and email
-- SE name, title, and email
-- RVP name, title, and email
-- Do you have headshot photos to attach? If yes, upload them now and tell me whose photo is whose.
-
-SECTION 5 — Brand colors (optional):
-- If you know the customer's brand colors, provide up to 3 hex codes. If not, I will suggest colors based on their website and industry.
-
----
-
-Once I have all the information, I will generate a single, complete HTML file that includes:
-
-1. A 9-slide interactive web deck (index.html) with:
-   - Slide 1: Hero with customer logo, Salesforce logo, key stats from their call, and product pills
-   - Slide 2: Four "flip cards" — front shows the pain in the customer's own words, back shows the Salesforce solution
-   - Slide 3: Platform overview — one card per Salesforce product with click-to-expand detail
-   - Slide 4: Field intelligence flow diagram — interactive 3-step animation
-   - Slide 5: Marketing attribution before/after comparison using their actual marketing tools
-   - Slide 6: AI architecture accordion (Claude → Agentforce stack)
-   - Slide 7: Board dashboard mockup with 3 interactive tabs (renewal risk, pipeline chart, win/loss)
-   - Slide 8: PE portfolio context (or growth platform if no PE firm)
-   - Slide 9: 90-day roadmap with two CTA buttons linking to team page and executive summary
-
-2. A team.html page with clean contact cards for each account team member
-
-3. An exec-summary.html page — a print-ready one-pager with all four pillars, timeline, and CTA
-
-QUALITY REQUIREMENTS — every deck must:
-- Use the customer's brand colors throughout (CSS variables, not hardcoded hex)
-- Use the customer's actual logo from their website
-- Use photography from the customer's website as hero/background images
-- Be fully mobile-responsive
-- Include real interactivity: flip cards on hover/click, product detail drawers, tabbed dashboard, keyboard navigation, scroll progress bar
-- Use the customer's own language from the transcript — no generic filler
-- NEVER mention replacing tools they love (if they use HubSpot, say "HubSpot + Salesforce integration" not "replace HubSpot with Marketing Cloud")
-- Sound consultative and executive, not like a product brochure
-
-IMPORTANT OUTPUT FORMAT:
-- Output the complete index.html as a single code block
-- Then output team.html as a second code block
-- Then output exec-summary.html as a third code block
-- Each file must be complete and self-contained — no external dependencies except CDN-hosted libraries (Tailwind CSS CDN, Chart.js CDN, Google Fonts)
-- Tell me exactly what to do with each file after you output it
-
-Start by asking me Section 1 now.</div>
-
-    <p class="prompt-note"><strong>Important:</strong> If Gemini's output looks cut off or incomplete, reply "continue" and it will keep going. For very large decks, you may need to say "continue" 2–3 times before you have the full file. Always wait until Gemini says it's done before copying the code.</p>
-  </div>
-</section>
-
-<!-- Netlify Publishing -->
-<section class="netlify" id="publish">
-  <div class="netlify-inner">
-    <div class="section-label">Publishing</div>
-    <h2>How to Get a Shareable URL with Netlify Drop</h2>
-    <p class="netlify-sub">Netlify Drop is free, instant, and requires no account. You get a public URL in under 2 minutes.</p>
-    <div class="netlify-steps">
-      <div class="netlify-step">
-        <div class="netlify-step-num">1</div>
-        <div class="netlify-step-body">
-          <strong>Create a folder on your desktop</strong>
-          <span>Make a new folder (name it anything, e.g. "Acme Deck"). Put your <code>index.html</code>, <code>team.html</code>, and <code>exec-summary.html</code> files inside it. If you have headshot photos, put those in the folder too.</span>
+    <!-- Output -->
+    <div class="prompt-output" id="prompt-output">
+      <div class="prompt-output-header">
+        <h3>Your personalized prompt is ready. Copy and paste into Gemini.</h3>
+        <div class="output-actions">
+          <button class="action-btn btn-copy" id="copy-btn" onclick="copyOutput()">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Copy Prompt
+          </button>
+          <a href="https://gemini.google.com" target="_blank" class="action-btn btn-gemini" style="text-decoration:none;">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 3h6v6M10 14L21 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Open Gemini
+          </a>
         </div>
       </div>
-      <div class="netlify-step">
-        <div class="netlify-step-num">2</div>
-        <div class="netlify-step-body">
-          <strong>Go to Netlify Drop</strong>
-          <span>Open your browser and go to <a href="https://app.netlify.com/drop" target="_blank">app.netlify.com/drop</a>. You'll see a large drop zone on the page.</span>
-        </div>
-      </div>
-      <div class="netlify-step">
-        <div class="netlify-step-num">3</div>
-        <div class="netlify-step-body">
-          <strong>Drag your folder onto the drop zone</strong>
-          <span>Drag the entire folder (not just the HTML file) from your desktop onto the Netlify drop zone. Netlify will upload all the files automatically. This takes about 10–20 seconds.</span>
-        </div>
-      </div>
-      <div class="netlify-step">
-        <div class="netlify-step-num">4</div>
-        <div class="netlify-step-body">
-          <strong>Copy your URL</strong>
-          <span>Netlify will show you a URL like:</span>
-          <div class="netlify-url">crisp-sunflower-a1b2c3.netlify.app</div>
-          <span style="display:block;margin-top:6px;">Copy that URL. Your deck is live immediately — open it in a new tab to confirm it looks right.</span>
-        </div>
-      </div>
-      <div class="netlify-step">
-        <div class="netlify-step-num">5</div>
-        <div class="netlify-step-body">
-          <strong>Optional: Create a free account for a permanent URL</strong>
-          <span>Without an account, Netlify Drop links expire after 24 hours. To make it permanent, create a free Netlify account (takes 2 minutes) and claim the site. You can also rename the URL to something like <span class="netlify-url">acme-salesforce.netlify.app</span>.</span>
-        </div>
+      <div class="prompt-output-box" id="prompt-output-box"></div>
+      <div class="prompt-success">
+        ✓ Copy this prompt → paste it into Gemini as your first message → Gemini will output 3 HTML files with no additional questions needed. Save each file, then use the deploy zone below.
       </div>
     </div>
   </div>
 </section>
 
-<!-- Tips -->
+<hr class="divider"/>
+
+<!-- ═══════════ DEPLOY ZONE ═══════════ -->
+<section class="deploy" id="deploy">
+  <div class="deploy-inner">
+    <div class="deploy-header">
+      <div class="section-label">Step 2 — Publish Your Deck</div>
+      <h2>Drop Your Files. Get a Shareable URL.</h2>
+      <p>Drag the three HTML files Gemini generated (index.html, team.html, exec-summary.html) onto the zone below. We'll package them and open Netlify Drop — one drop and your link is live.</p>
+    </div>
+
+    <div class="drop-zone" id="drop-zone"
+      ondragover="handleDragOver(event)"
+      ondragleave="handleDragLeave(event)"
+      ondrop="handleDrop(event)"
+      onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" multiple accept=".html,.png,.jpg,.jpeg,.svg,.css,.js" onchange="handleFileSelect(event)"/>
+      <div class="drop-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Drop your HTML files here</h3>
+      <p>index.html, team.html, exec-summary.html + any photo files<br/>
+      or <span class="drop-browse">click to browse</span></p>
+    </div>
+
+    <div class="file-list" id="file-list">
+      <div class="file-list-header">Files ready to deploy</div>
+      <div id="file-items"></div>
+    </div>
+
+    <div class="deploy-actions" id="deploy-actions" style="display:none;">
+      <button class="deploy-btn deploy-btn-primary" id="deploy-btn" onclick="deployFiles()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Package &amp; Open Netlify Drop
+      </button>
+      <button class="deploy-btn deploy-btn-clear" onclick="clearFiles()">Clear Files</button>
+    </div>
+
+    <div class="deploy-result" id="deploy-result">
+      <h4>✓ Your files are packaged — follow these two steps:</h4>
+      <p><strong>1.</strong> Your file bundle (<code>customer-deck.zip</code>) has been downloaded to your Downloads folder.<br/>
+      <strong>2.</strong> Netlify Drop has opened in a new tab. Drag <code>customer-deck.zip</code> onto the Netlify page. You'll have a live URL in about 10 seconds.</p>
+      <a href="https://app.netlify.com/drop" target="_blank" class="open-netlify-btn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Open Netlify Drop Again
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TIPS ═══════════ -->
 <section class="tips">
   <div class="tips-inner">
     <div class="section-label">Pro Tips</div>
-    <h2>Get a Better Deck Every Time</h2>
+    <h2>Quick Wins Every Time</h2>
     <div class="tips-grid">
       <div class="tip">
         <div class="tip-icon">📋</div>
         <strong>More transcript = better deck</strong>
-        <span>Paste the entire call recording transcript if you have one. Gemini will pull the customer's actual phrases and use them in the slide copy — it reads much more authentic than rewritten content.</span>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">🎨</div>
-        <strong>Check the brand colors</strong>
-        <span>After Gemini generates the deck, open it in your browser and check whether the colors match the customer's brand. If not, tell Gemini the correct hex codes and ask it to regenerate.</span>
+        <span>Paste the full recording transcript if you have it. Gemini will pull your customer's exact phrases and use them verbatim — sounds authentic because it is.</span>
       </div>
       <div class="tip">
         <div class="tip-icon">🚫</div>
-        <strong>Never suggest replacing what they love</strong>
-        <span>Always tell Gemini what tools the customer currently uses and values. This keeps the deck consultative. The message is always "Salesforce integrates with X" — never "replace X with Salesforce."</span>
-      </div>
-      <div class="tip">
-        <div class="tip-icon">📸</div>
-        <strong>Upload headshots directly to Gemini</strong>
-        <span>Gemini can accept image uploads. If you have headshot photos for the team page, attach them when Gemini asks in Section 4. It will embed them correctly in the team.html file.</span>
+        <strong>Always name the tools they love</strong>
+        <span>Add every tool they currently use to the "Tech Stack" field. The deck will say "HubSpot Integration" not "replace HubSpot" — that's what closes deals.</span>
       </div>
       <div class="tip">
         <div class="tip-icon">🔁</div>
-        <strong>Iterate freely</strong>
-        <span>After Gemini generates the deck, you can ask it to change anything. "Make the hero darker," "add a slide about their Snowflake data," "change the Phase 1 date to November" — it can update the code.</span>
+        <strong>Iterate in Gemini freely</strong>
+        <span>After Gemini generates the deck, just ask it to change anything. "Make the hero darker," "change Phase 1 to November," "add a slide about their Oracle integration." It updates inline.</span>
       </div>
       <div class="tip">
         <div class="tip-icon">📱</div>
-        <strong>Always preview on mobile</strong>
-        <span>Before sending, open the Netlify URL on your phone. The deck is built to be mobile-responsive, but a quick check ensures nothing looks off when the customer opens it on their device.</span>
+        <strong>Test it on your phone first</strong>
+        <span>Open the Netlify URL on your phone before you share. The deck is built to be mobile-responsive — a 30-second check ensures executives see it perfectly on theirs.</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Example -->
-<section class="example" id="example">
-  <div class="example-inner">
-    <div>
-      <div class="section-label">Live Example</div>
-      <h2>See a Real Deck Built With This Workflow</h2>
-      <p>The USG Water Solutions deck was the original — built for a water treatment company and their PE firm Warren Equity Partners. It covers Field Intelligence, HubSpot attribution, Claude AI → Agentforce architecture, and board visibility. Open it on your phone too.</p>
-    </div>
-    <a href="https://edalton122.github.io/usg-water-salesforce-revenue-engine/" target="_blank" class="example-btn">
-      View Live Example →
-    </a>
-  </div>
-</section>
-
-<!-- Footer -->
+<!-- ═══════════ FOOTER ═══════════ -->
 <footer>
-  <img src="https://wp.sfdcdigital.com/en-us/wp-content/uploads/sites/4/2024/11/logo-salesforce.svg" alt="Salesforce" style="height:22px;filter:brightness(0) invert(1);opacity:0.5;margin-bottom:14px;"/>
-  <p>Built by the Salesforce Account Team · <strong>Eric Dalton</strong> · <a href="mailto:edalton@salesforce.com">edalton@salesforce.com</a><br/>
-  Internal resource — not for external distribution · Questions? Reach out directly.</p>
+  <img src="https://wp.sfdcdigital.com/en-us/wp-content/uploads/sites/4/2024/11/logo-salesforce.svg" alt="Salesforce" style="height:22px;filter:brightness(0) invert(1);opacity:0.45;margin-bottom:14px;display:block;margin-left:auto;margin-right:auto;"/>
+  <p>Built by the Salesforce Account Team &nbsp;·&nbsp; <strong>Eric Dalton</strong> &nbsp;·&nbsp; <a href="mailto:edalton@salesforce.com">edalton@salesforce.com</a><br/>
+  Internal resource — not for external distribution &nbsp;·&nbsp; Questions? Reach out directly.</p>
 </footer>
 
 <script>
-function copyPrompt(btn) {
-  const text = document.getElementById('prompt-text').innerText;
+/* ── Product pill toggle ── */
+function togglePill(label) {
+  setTimeout(() => {
+    const cb = label.querySelector('input');
+    if (cb.checked) label.classList.add('selected');
+    else label.classList.remove('selected');
+  }, 0);
+}
+
+/* ── Prompt builder ── */
+function buildPrompt() {
+  const name    = document.getElementById('f-name').value.trim();
+  const website = document.getElementById('f-website').value.trim();
+  const short   = document.getElementById('f-short').value.trim() || name.split(' ')[0];
+  const pe      = document.getElementById('f-pe').value.trim();
+  const crews   = document.getElementById('f-crews').value.trim();
+  const geo     = document.getElementById('f-geo').value.trim();
+  const tech    = document.getElementById('f-tech').value.trim();
+  const date    = document.getElementById('f-date').value.trim() || 'Q4 2026';
+  const notes   = document.getElementById('f-notes').value.trim();
+  const aeName  = document.getElementById('f-ae-name').value.trim();
+  const aeTitle = document.getElementById('f-ae-title').value.trim();
+  const aeEmail = document.getElementById('f-ae-email').value.trim();
+  const seName  = document.getElementById('f-se-name').value.trim();
+  const seTitle = document.getElementById('f-se-title').value.trim();
+  const seEmail = document.getElementById('f-se-email').value.trim();
+  const rvpName = document.getElementById('f-rvp-name').value.trim();
+  const rvpTitle= document.getElementById('f-rvp-title').value.trim();
+  const rvpEmail= document.getElementById('f-rvp-email').value.trim();
+
+  if (!name || !website || !notes) {
+    alert('Please fill in at least the Customer Name, Website, and Call Notes.');
+    return;
+  }
+
+  const products = [...document.querySelectorAll('#products-check input:checked')].map(i => i.value);
+
+  const prompt = `You are a senior Salesforce solutions architect and executive communication specialist. Generate a fully branded, interactive HTML executive sales deck for a Salesforce customer — a live web presentation the AE can share as a URL.
+
+I have already filled in all the customer details below. Do NOT ask me any clarifying questions. Read all the information I've provided and immediately generate the three complete HTML files.
+
+════════════════════════════════════════
+CUSTOMER INFORMATION
+════════════════════════════════════════
+
+Company Name: ${name}
+Short Name: ${short}
+Website: ${website}${pe ? `\nPE / Investor Firm: ${pe}` : '\nPE / Investor Firm: None'}${crews ? `\nField / Service Team: ${crews}` : ''}${geo ? `\nGeographic Footprint: ${geo}` : ''}
+Current Tech Stack: ${tech || 'Not specified — treat all tools as worth keeping and integrating'}
+Target Review Date: ${date}
+
+Salesforce Products to Feature:
+${products.length > 0 ? products.map(p => `  • ${p}`).join('\n') : '  • Sales Cloud\n  • Field Service Mobile\n  • Data Cloud\n  • Agentforce'}
+
+Account Team:
+  AE:  ${aeName || 'Your AE Name'} | ${aeTitle || 'Account Executive'} | ${aeEmail || 'ae@salesforce.com'}
+  SE:  ${seName || 'Your SE Name'} | ${seTitle || 'Solutions Engineer'} | ${seEmail || 'se@salesforce.com'}
+  RVP: ${rvpName || 'Your RVP Name'} | ${rvpTitle || 'Regional Vice President'} | ${rvpEmail || 'rvp@salesforce.com'}
+
+════════════════════════════════════════
+CALL TRANSCRIPT / MEETING NOTES
+════════════════════════════════════════
+
+${notes}
+
+════════════════════════════════════════
+WHAT TO GENERATE
+════════════════════════════════════════
+
+Read the transcript above and extract exactly 4 customer pain points. For each pain point:
+  • Write a 3–5 word headline using the customer's own language
+  • Write a 2–3 sentence description from the transcript
+  • Extract two statistics that quantify the pain
+  • Map it to the most relevant Salesforce product from the list above
+  • Write 3 bullet points describing the Salesforce solution
+
+Then generate THREE complete, self-contained HTML files:
+
+FILE 1: index.html — 9-slide interactive web deck
+  • Slide 1: Hero with ${name} logo (from ${website}), Salesforce logo, key stats, product pills
+  • Slide 2: Four flip cards — front = pain in customer's words, back = Salesforce solution (hover/click to flip)
+  • Slide 3: Platform overview — one card per Salesforce product, click to expand detail drawer
+  • Slide 4: Field intelligence flow diagram — interactive 3-step animation with advance/reset buttons
+  • Slide 5: Marketing attribution before/after — uses actual tools from their tech stack
+  • Slide 6: AI architecture clickable accordion (data layer → Data Cloud → Trust Layer → Agentforce → Apps)
+  • Slide 7: Board dashboard mockup — 3 interactive tabs (renewal risk table, pipeline bar chart, win/loss doughnut)
+  • Slide 8: PE portfolio (if PE firm provided) or growth platform slide
+  • Slide 9: 90-day roadmap with two CTA buttons → team.html and exec-summary.html
+
+FILE 2: team.html — standalone team page
+  • Clean contact cards for each account team member
+  • Initials avatars (H, E, J style) in brand colors
+  • Direct mailto links
+  • Back link to index.html
+
+FILE 3: exec-summary.html — print-ready executive summary
+  • Print/Save PDF button at top
+  • All 4 pillars with outcomes
+  • 30/60/90 roadmap
+  • CTA to team.html
+
+════════════════════════════════════════
+QUALITY REQUIREMENTS
+════════════════════════════════════════
+
+BRANDING:
+  • Fetch the customer's brand colors from ${website} — use their actual palette throughout
+  • Use CSS variables (--brand-primary, --brand-secondary, --brand-accent, --brand-light)
+  • Use the customer's logo and hero photography from their website
+  • Every visual should feel like it was made specifically for ${name}, not a Salesforce template
+
+CONTENT:
+  • Use the customer's own language and phrases from the transcript
+  • NEVER suggest replacing tools they love — if they use ${tech || 'any tool'}, say "integration" not "replacement"
+  • Sound consultative and executive, never like a product brochure
+  • All stats and pain points must come from the transcript, not generic filler
+
+TECHNICAL:
+  • Single-file output for each page — no external CSS files (use CDN for Tailwind, Chart.js, Google Fonts only)
+  • Fully mobile-responsive with hamburger-hidden sidebar on mobile
+  • Progress bar at top of index.html (scrolls as user reads)
+  • Keyboard navigation (arrow keys advance slides) in index.html
+  • All interactive components working: flip cards, drawers, accordion, tabs, flow diagram
+
+OUTPUT FORMAT:
+  • Output index.html as one complete, unbroken code block
+  • Then output team.html as a second code block
+  • Then output exec-summary.html as a third code block
+  • After each file, briefly note what the AE should name it and where it goes
+  • Do not truncate any file — if it's long, output it completely
+
+Start generating now. Output index.html first.`;
+
+  document.getElementById('prompt-output-box').textContent = prompt;
+  const outputEl = document.getElementById('prompt-output');
+  outputEl.classList.add('visible');
+  outputEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyOutput() {
+  const text = document.getElementById('prompt-output-box').textContent;
   navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
     btn.classList.add('copied');
-    btn.innerHTML = `
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Copied!
-    `;
+    btn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!`;
     setTimeout(() => {
       btn.classList.remove('copied');
-      btn.innerHTML = `
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Copy Prompt
-      `;
+      btn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round" stroke-linejoin="round"/></svg> Copy Prompt`;
     }, 2500);
   });
 }
+
+/* ── File drop zone ── */
+let droppedFiles = [];
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  document.getElementById('drop-zone').classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('drag-over');
+  addFiles(Array.from(e.dataTransfer.files));
+}
+function handleFileSelect(e) {
+  addFiles(Array.from(e.target.files));
+}
+
+function addFiles(files) {
+  files.forEach(f => {
+    if (!droppedFiles.find(x => x.name === f.name)) droppedFiles.push(f);
+  });
+  renderFileList();
+}
+
+function renderFileList() {
+  const listEl = document.getElementById('file-list');
+  const itemsEl = document.getElementById('file-items');
+  const actionsEl = document.getElementById('deploy-actions');
+
+  if (droppedFiles.length === 0) {
+    listEl.classList.remove('visible');
+    actionsEl.style.display = 'none';
+    return;
+  }
+  listEl.classList.add('visible');
+  actionsEl.style.display = 'flex';
+
+  itemsEl.innerHTML = droppedFiles.map((f, i) => `
+    <div class="file-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="file-item-name">${f.name}</span>
+      <span class="file-item-size">${formatSize(f.size)}</span>
+      <button class="file-remove" onclick="removeFile(${i})" title="Remove">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  `).join('');
+}
+
+function removeFile(i) {
+  droppedFiles.splice(i, 1);
+  renderFileList();
+}
+function clearFiles() {
+  droppedFiles = [];
+  renderFileList();
+  document.getElementById('deploy-result').classList.remove('visible');
+  document.getElementById('file-input').value = '';
+}
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1024/1024).toFixed(1) + ' MB';
+}
+
+async function deployFiles() {
+  if (droppedFiles.length === 0) return;
+  const btn = document.getElementById('deploy-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round"/></svg> Packaging...`;
+
+  try {
+    const zip = new JSZip();
+    for (const file of droppedFiles) {
+      const content = await file.arrayBuffer();
+      zip.file(file.name, content);
+    }
+    const blob = await zip.generateAsync({ type: 'blob' });
+
+    // Download the zip
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'customer-deck.zip';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    // Open Netlify Drop
+    setTimeout(() => window.open('https://app.netlify.com/drop', '_blank'), 400);
+
+    document.getElementById('deploy-result').classList.add('visible');
+    document.getElementById('deploy-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    alert('Something went wrong packaging the files. Try again or drag your files directly to netlify.com/drop.');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-linecap="round" stroke-linejoin="round"/></svg> Package &amp; Open Netlify Drop`;
+}
 </script>
+<style>
+@keyframes spin { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
+</style>
 
 </body>
 </html>
