@@ -155,6 +155,41 @@
     .container { max-width: 1280px; margin: 0 auto; padding: 0 60px; }
     hr.divider { border: none; border-top: 1px solid var(--sf-border); margin: 0; }
 
+    /* ── WALKTHROUGH VIDEO ── */
+    .walkthrough { background: var(--sf-dark); padding: 64px 60px; }
+    .walkthrough-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.5fr;
+      gap: 56px; align-items: center;
+    }
+    .walkthrough-left .section-label { color: #7DD3FA; }
+    .walkthrough-left h2 { font-size: 1.6rem; font-weight: 900; color: white; letter-spacing: -0.025em; margin-bottom: 10px; }
+    .walkthrough-left > p { font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 24px; }
+    .walkthrough-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .walkthrough-avatar {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+      background: var(--sf-blue); color: white;
+      font-size: 14px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .walkthrough-name { font-size: 14px; font-weight: 700; color: white; }
+    .walkthrough-title { font-size: 12px; color: rgba(255,255,255,0.5); }
+    .unmute-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2);
+      color: white; font-size: 13px; font-weight: 700;
+      padding: 10px 20px; border-radius: 99px;
+      cursor: pointer; transition: all 0.2s; margin-bottom: 16px;
+    }
+    .unmute-btn:hover { background: rgba(255,255,255,0.18); }
+    .unmute-btn.unmuted { background: var(--sf-blue); border-color: var(--sf-blue); }
+    .walkthrough-music-credit { font-size: 10px; color: rgba(255,255,255,0.3); font-style: italic; }
+    .video-frame {
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
     /* ── HOW IT WORKS (3 steps) ── */
     .how { background: white; padding: 64px 60px; }
     .how-inner { max-width: 1280px; margin: 0 auto; }
@@ -402,6 +437,8 @@
       .how { padding: 48px 24px; }
       .how-grid { grid-template-columns: 1fr; gap: 16px; }
       .how-arrow { display: none; }
+      .walkthrough { padding: 48px 24px; }
+      .walkthrough-inner { grid-template-columns: 1fr; gap: 28px; }
       .builder { padding: 48px 24px; }
       .builder-inner, .deploy-inner, .tips-inner, .how-inner { padding: 0; }
       .form-grid { grid-template-columns: 1fr; }
@@ -502,6 +539,44 @@
 
   </div>
 </section>
+
+<!-- ═══════════ WALKTHROUGH VIDEO ═══════════ -->
+<section class="walkthrough" id="walkthrough">
+  <div class="walkthrough-inner">
+
+    <div class="walkthrough-left">
+      <div class="section-label">60-Second Overview</div>
+      <h2>Watch Before You Build.</h2>
+      <p>A quick walkthrough of what this tool is, why it matters, and exactly how to use it — start to finish.</p>
+      <div class="walkthrough-meta">
+        <div class="walkthrough-avatar">ED</div>
+        <div>
+          <div class="walkthrough-name">Eric Dalton</div>
+          <div class="walkthrough-title">Solutions Engineer · Salesforce</div>
+        </div>
+      </div>
+      <button class="unmute-btn" id="unmute-btn" onclick="toggleMute()">
+        <svg id="icon-muted" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" stroke-linecap="round" stroke-linejoin="round"/><line x1="23" y1="9" x2="17" y2="15" stroke-linecap="round"/><line x1="17" y1="9" x2="23" y2="15" stroke-linecap="round"/></svg>
+        <svg id="icon-unmuted" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="display:none;"><path d="M11 5L6 9H2v6h4l5 4V5z" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="unmute-label">Tap to Unmute</span>
+      </button>
+      <p class="walkthrough-music-credit">Background music: "Corporate Pulse" · Royalty-free, no attribution required</p>
+    </div>
+
+    <div class="walkthrough-right">
+      <div class="video-frame">
+        <video id="walkthrough-video"
+          src="walkthrough.mp4"
+          autoplay muted loop playsinline
+          style="width:100%;border-radius:12px;display:block;">
+        </video>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider"/>
 
 <!-- ═══════════ HOW IT WORKS ═══════════ -->
 <section class="how" id="how">
@@ -801,6 +876,27 @@ function togglePill(label) {
     if (cb.checked) label.classList.add('selected');
     else label.classList.remove('selected');
   }, 0);
+}
+
+/* ── Video mute toggle ── */
+function toggleMute() {
+  const video = document.getElementById('walkthrough-video');
+  const btn   = document.getElementById('unmute-btn');
+  const label = document.getElementById('unmute-label');
+  const iconMuted   = document.getElementById('icon-muted');
+  const iconUnmuted = document.getElementById('icon-unmuted');
+  video.muted = !video.muted;
+  if (video.muted) {
+    label.textContent = 'Tap to Unmute';
+    iconMuted.style.display   = '';
+    iconUnmuted.style.display = 'none';
+    btn.classList.remove('unmuted');
+  } else {
+    label.textContent = 'Mute';
+    iconMuted.style.display   = 'none';
+    iconUnmuted.style.display = '';
+    btn.classList.add('unmuted');
+  }
 }
 
 /* ── Mode toggle ── */
