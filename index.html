@@ -563,17 +563,14 @@
       <div class="team-row" style="margin-bottom:16px;">
         <div class="form-group">
           <input type="text" id="f-ae-name" placeholder="AE Name"/>
-          <input type="text" id="f-ae-title" placeholder="AE Title" style="margin-top:8px;"/>
           <input type="email" id="f-ae-email" placeholder="AE Email" style="margin-top:8px;"/>
         </div>
         <div class="form-group">
           <input type="text" id="f-se-name" placeholder="SE Name"/>
-          <input type="text" id="f-se-title" placeholder="SE Title" style="margin-top:8px;"/>
           <input type="email" id="f-se-email" placeholder="SE Email" style="margin-top:8px;"/>
         </div>
         <div class="form-group">
           <input type="text" id="f-rvp-name" placeholder="RVP Name"/>
-          <input type="text" id="f-rvp-title" placeholder="RVP Title" style="margin-top:8px;"/>
           <input type="email" id="f-rvp-email" placeholder="RVP Email" style="margin-top:8px;"/>
         </div>
       </div>
@@ -716,13 +713,13 @@ function buildPrompt() {
   const date    = document.getElementById('f-date').value.trim() || 'Q4 2026';
   const notes   = document.getElementById('f-notes').value.trim();
   const aeName  = document.getElementById('f-ae-name').value.trim();
-  const aeTitle = document.getElementById('f-ae-title').value.trim();
+  const aeTitle = 'Account Executive';
   const aeEmail = document.getElementById('f-ae-email').value.trim();
   const seName  = document.getElementById('f-se-name').value.trim();
-  const seTitle = document.getElementById('f-se-title').value.trim();
+  const seTitle = 'Solutions Engineer';
   const seEmail = document.getElementById('f-se-email').value.trim();
   const rvpName = document.getElementById('f-rvp-name').value.trim();
-  const rvpTitle= document.getElementById('f-rvp-title').value.trim();
+  const rvpTitle= 'Regional Vice President';
   const rvpEmail= document.getElementById('f-rvp-email').value.trim();
 
   if (!name || !website || !notes) {
