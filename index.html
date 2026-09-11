@@ -267,7 +267,16 @@
     .deploy-inner { max-width: 1280px; margin: 0 auto; }
     .deploy-header { margin-bottom: 28px; }
     .deploy-header h2 { font-size: 1.6rem; font-weight: 900; color: var(--sf-dark); letter-spacing: -0.025em; margin-bottom: 8px; }
-    .deploy-header p { font-size: 0.9rem; color: var(--muted); max-width: 540px; line-height: 1.65; }
+    .deploy-header p { font-size: 0.9rem; color: var(--muted); max-width: 600px; line-height: 1.65; margin-bottom: 14px; }
+    .deploy-why {
+      display: inline-flex; align-items: flex-start; gap: 10px;
+      background: #FFF7ED; border-left: 3px solid #F97316;
+      border-radius: 0 8px 8px 0;
+      padding: 11px 16px; max-width: 640px;
+    }
+    .deploy-why svg { flex-shrink: 0; margin-top: 1px; color: #EA580C; }
+    .deploy-why p { font-size: 12px; font-weight: 500; color: #7C2D12; line-height: 1.65; margin: 0; }
+    .deploy-why strong { font-weight: 800; color: #9A3412; }
 
     .drop-zone {
       border: 2.5px dashed var(--sf-border); border-radius: 16px;
@@ -621,7 +630,11 @@
     <div class="deploy-header">
       <div class="section-label">Step 2 — Publish Your Deck</div>
       <h2>Drop Your Files. Get a Shareable URL.</h2>
-      <p>Drag the three HTML files Gemini generated (index.html, team.html, exec-summary.html) onto the zone below. We'll package them and open Netlify Drop — one drop and your link is live.</p>
+      <p>Drag the HTML files Gemini generated onto the zone below. We'll package them and open Netlify Drop — one drag and your link is live.</p>
+      <div class="deploy-why">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <p><strong>Why this step matters:</strong> Gemini saves your deck as files on your local device — which means only you can open them. To send your customer a link they can open on any device, forward to their team, or pull up in a board meeting, the deck needs to live on the web at a public URL. This step does exactly that — no account required, takes about 10 seconds.</p>
+      </div>
     </div>
 
     <div class="drop-zone" id="drop-zone"
