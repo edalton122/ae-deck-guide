@@ -358,7 +358,7 @@
     }
 
     /* ── DEPLOY / GITHUB PAGES ── */
-    .deploy { background: white; padding: 72px 60px; border-top: 1px solid var(--sf-border); }
+    .deploy { background: white; padding: 60px 60px; border-top: 1px solid var(--sf-border); }
     .deploy-inner {
       max-width: 1280px; margin: 0 auto;
       display: grid; grid-template-columns: 1fr 1.4fr;
@@ -377,16 +377,17 @@
     .deploy-why strong { font-weight: 800; color: #9A3412; }
 
     /* GitHub steps */
-    .gh-steps { display: flex; flex-direction: column; gap: 12px; }
+    .gh-steps { display: flex; flex-direction: column; gap: 8px; }
     .gh-step {
-      display: flex; gap: 16px; align-items: flex-start;
+      display: flex; gap: 14px; align-items: center;
       background: var(--sf-light); border: 1px solid var(--sf-border);
-      border-radius: 14px; padding: 18px 20px;
+      border-radius: 12px; padding: 14px 16px;
       transition: border-color 0.2s, box-shadow 0.2s;
       text-decoration: none; color: inherit;
     }
+    .gh-step.has-drop { align-items: flex-start; }
     .gh-step[href]:hover, .gh-step.clickable:hover {
-      border-color: var(--sf-blue); box-shadow: 0 2px 12px rgba(1,118,211,0.08);
+      border-color: var(--sf-blue); box-shadow: 0 2px 10px rgba(1,118,211,0.08);
       cursor: pointer;
     }
     .gh-step[href] .gh-step-body h4::after,
@@ -398,15 +399,14 @@
     .gh-step[href]:hover .gh-step-body h4::after,
     .gh-step.clickable:hover .gh-step-body h4::after { opacity: 1; }
     .gh-step-num {
-      width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%;
+      width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%;
       background: var(--sf-blue); color: white;
-      font-size: 13px; font-weight: 900;
+      font-size: 12px; font-weight: 900;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
     }
     .gh-step-body { flex: 1; }
-    .gh-step-body h4 { font-size: 13px; font-weight: 800; color: var(--sf-dark); margin-bottom: 4px; }
-    .gh-step-body p { font-size: 12px; color: var(--muted); line-height: 1.65; margin: 0; }
+    .gh-step-body h4 { font-size: 13px; font-weight: 800; color: var(--sf-dark); margin: 0; }
+    .gh-step-body p { font-size: 12px; color: var(--muted); line-height: 1.6; margin: 2px 0 0; }
     .gh-step-body code {
       font-family: 'SF Mono', 'Fira Code', monospace;
       font-size: 11px; background: #E8F0FE; color: var(--sf-dark);
@@ -415,40 +415,41 @@
     .gh-step-warning {
       font-size: 11px; color: #92400E; font-weight: 700;
       background: #FEF9C3; border-radius: 5px;
-      padding: 3px 8px; display: inline-block; margin-top: 5px;
+      padding: 2px 7px; display: inline-block; margin-top: 4px;
     }
 
-    /* Step 3 drop zone (inline) */
+    /* Step 3 drop zone — compact by default, expands after files land */
     .gh-drop-zone {
-      margin-top: 12px; border: 2px dashed var(--sf-border);
-      border-radius: 10px; padding: 16px 18px; text-align: center;
+      margin-top: 8px; border: 1.5px dashed var(--sf-border);
+      border-radius: 8px; padding: 8px 14px;
+      display: flex; align-items: center; gap: 8px;
       background: white; cursor: pointer; transition: all 0.2s;
     }
     .gh-drop-zone.drag-over { border-color: var(--sf-blue); background: #EBF5FF; }
     .gh-drop-zone input[type="file"] { display: none; }
     .gh-drop-zone p { font-size: 12px; color: var(--muted); margin: 0; }
     .gh-drop-zone .browse-link { color: var(--sf-blue); font-weight: 700; text-decoration: underline; cursor: pointer; }
-    .gh-file-list { margin-top: 10px; display: none; }
+    .gh-file-list { margin-top: 8px; display: none; }
     .gh-file-list.visible { display: block; }
     .gh-file-item {
-      display: flex; align-items: center; gap: 8px;
-      padding: 6px 10px; border-radius: 7px; margin-bottom: 4px;
-      font-size: 12px; font-weight: 600;
+      display: flex; align-items: center; gap: 7px;
+      padding: 4px 9px; border-radius: 6px; margin-bottom: 3px;
+      font-size: 11.5px; font-weight: 600;
     }
     .gh-file-item.found { background: #DCFCE7; color: #14532D; }
     .gh-file-item.missing { background: #FEE2E2; color: #991B1B; }
     .gh-file-item.extra { background: #F0F9FF; color: #0C4A6E; }
     .gh-files-ready {
-      margin-top: 8px; background: #DCFCE7; border: 1px solid #86EFAC;
-      border-radius: 8px; padding: 10px 14px;
-      font-size: 12px; color: #14532D; font-weight: 700;
+      margin-top: 6px; background: #DCFCE7; border: 1px solid #86EFAC;
+      border-radius: 7px; padding: 8px 12px;
+      font-size: 11.5px; color: #14532D; font-weight: 700;
       display: none; align-items: center; gap: 6px;
     }
     .gh-files-ready.visible { display: flex; }
     .gh-files-missing {
-      margin-top: 8px; background: #FEF9C3; border: 1px solid #FDE68A;
-      border-radius: 8px; padding: 10px 14px;
-      font-size: 12px; color: #92400E; font-weight: 600;
+      margin-top: 6px; background: #FEF9C3; border: 1px solid #FDE68A;
+      border-radius: 7px; padding: 8px 12px;
+      font-size: 11.5px; color: #92400E; font-weight: 600;
       display: none;
     }
     .gh-files-missing.visible { display: block; }
@@ -884,11 +885,11 @@
         </a>
 
         <!-- Step 3: inline drop zone -->
-        <div class="gh-step clickable" id="gh-step-3" onclick="document.getElementById('gh-file-input').click()">
+        <div class="gh-step clickable has-drop" id="gh-step-3" onclick="document.getElementById('gh-file-input').click()">
           <div class="gh-step-num">3</div>
           <div class="gh-step-body">
             <h4>Upload all three HTML files</h4>
-            <p>Drop your files below to verify you have all three, then drag those same files into your GitHub repo's upload page. Click <strong>Commit changes</strong> when done.</p>
+            <p>Drop your files below to confirm you have all three, then upload those same files in your GitHub repo. Click <strong>Commit changes</strong>.</p>
             <span class="gh-step-warning">All three files must be uploaded together — they link to each other.</span>
 
             <div class="gh-drop-zone" id="gh-drop-zone"
