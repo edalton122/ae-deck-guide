@@ -383,14 +383,28 @@
       background: var(--sf-light); border: 1px solid var(--sf-border);
       border-radius: 14px; padding: 18px 20px;
       transition: border-color 0.2s, box-shadow 0.2s;
+      text-decoration: none; color: inherit;
     }
-    .gh-step:hover { border-color: var(--sf-blue); box-shadow: 0 2px 12px rgba(1,118,211,0.08); }
+    .gh-step[href]:hover, .gh-step.clickable:hover {
+      border-color: var(--sf-blue); box-shadow: 0 2px 12px rgba(1,118,211,0.08);
+      cursor: pointer;
+    }
+    .gh-step[href] .gh-step-body h4::after,
+    .gh-step.clickable .gh-step-body h4::after {
+      content: ' ↗';
+      font-size: 10px; color: var(--sf-blue); font-weight: 700;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .gh-step[href]:hover .gh-step-body h4::after,
+    .gh-step.clickable:hover .gh-step-body h4::after { opacity: 1; }
     .gh-step-num {
       width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%;
       background: var(--sf-blue); color: white;
       font-size: 13px; font-weight: 900;
       display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
+    .gh-step-body { flex: 1; }
     .gh-step-body h4 { font-size: 13px; font-weight: 800; color: var(--sf-dark); margin-bottom: 4px; }
     .gh-step-body p { font-size: 12px; color: var(--muted); line-height: 1.65; margin: 0; }
     .gh-step-body code {
@@ -403,6 +417,42 @@
       background: #FEF9C3; border-radius: 5px;
       padding: 3px 8px; display: inline-block; margin-top: 5px;
     }
+
+    /* Step 3 drop zone (inline) */
+    .gh-drop-zone {
+      margin-top: 12px; border: 2px dashed var(--sf-border);
+      border-radius: 10px; padding: 16px 18px; text-align: center;
+      background: white; cursor: pointer; transition: all 0.2s;
+    }
+    .gh-drop-zone.drag-over { border-color: var(--sf-blue); background: #EBF5FF; }
+    .gh-drop-zone input[type="file"] { display: none; }
+    .gh-drop-zone p { font-size: 12px; color: var(--muted); margin: 0; }
+    .gh-drop-zone .browse-link { color: var(--sf-blue); font-weight: 700; text-decoration: underline; cursor: pointer; }
+    .gh-file-list { margin-top: 10px; display: none; }
+    .gh-file-list.visible { display: block; }
+    .gh-file-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px; border-radius: 7px; margin-bottom: 4px;
+      font-size: 12px; font-weight: 600;
+    }
+    .gh-file-item.found { background: #DCFCE7; color: #14532D; }
+    .gh-file-item.missing { background: #FEE2E2; color: #991B1B; }
+    .gh-file-item.extra { background: #F0F9FF; color: #0C4A6E; }
+    .gh-files-ready {
+      margin-top: 8px; background: #DCFCE7; border: 1px solid #86EFAC;
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 12px; color: #14532D; font-weight: 700;
+      display: none; align-items: center; gap: 6px;
+    }
+    .gh-files-ready.visible { display: flex; }
+    .gh-files-missing {
+      margin-top: 8px; background: #FEF9C3; border: 1px solid #FDE68A;
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 12px; color: #92400E; font-weight: 600;
+      display: none;
+    }
+    .gh-files-missing.visible { display: block; }
+
     .gh-open-btn {
       display: flex; align-items: center; justify-content: center; gap: 8px;
       background: linear-gradient(135deg, var(--sf-dark), var(--sf-blue));
@@ -815,44 +865,68 @@
     <div class="deploy-right">
       <div class="gh-steps">
 
-        <div class="gh-step">
+        <!-- Step 1: clickable → github.com/login -->
+        <a href="https://github.com/login" target="_blank" class="gh-step">
           <div class="gh-step-num">1</div>
           <div class="gh-step-body">
             <h4>Sign in to GitHub with your Salesforce account</h4>
-            <p>Go to <strong>github.com</strong> and sign in. Use "Sign in with Google" and your <code>@salesforce.com</code> email — you already have access.</p>
+            <p>Click here to open GitHub. Use <strong>"Sign in with Google"</strong> and your <code>@salesforce.com</code> email — you already have access.</p>
           </div>
-        </div>
+        </a>
 
-        <div class="gh-step">
+        <!-- Step 2: clickable → github.com/new -->
+        <a href="https://github.com/new" target="_blank" class="gh-step">
           <div class="gh-step-num">2</div>
           <div class="gh-step-body">
             <h4>Create a new repository</h4>
-            <p>Click <strong>"+"</strong> in the top right → <strong>New repository</strong>. Name it something like <code>acme-salesforce-deck</code>. Set to <strong>Public</strong>. Click <strong>Create repository</strong>.</p>
+            <p>Click here to open New Repository. Name it something like <code>acme-salesforce-deck</code>. Set to <strong>Public</strong>. Click <strong>Create repository</strong>.</p>
           </div>
-        </div>
+        </a>
 
-        <div class="gh-step">
+        <!-- Step 3: inline drop zone -->
+        <div class="gh-step clickable" id="gh-step-3" onclick="document.getElementById('gh-file-input').click()">
           <div class="gh-step-num">3</div>
           <div class="gh-step-body">
             <h4>Upload all three HTML files</h4>
-            <p>In the empty repo, click <strong>"uploading an existing file."</strong> Drag <code>index.html</code>, <code>team.html</code>, and <code>exec-summary.html</code> — plus any photo files — onto the page. Click <strong>Commit changes</strong>.</p>
+            <p>Drop your files below to verify you have all three, then drag those same files into your GitHub repo's upload page. Click <strong>Commit changes</strong> when done.</p>
             <span class="gh-step-warning">All three files must be uploaded together — they link to each other.</span>
+
+            <div class="gh-drop-zone" id="gh-drop-zone"
+              ondragover="ghDragOver(event)" ondragleave="ghDragLeave(event)" ondrop="ghDrop(event)"
+              onclick="event.stopPropagation(); document.getElementById('gh-file-input').click()">
+              <input type="file" id="gh-file-input" multiple accept=".html,.htm,.png,.jpg,.jpeg,.svg,.css,.js,.webp" onchange="ghFileSelect(event)" onclick="event.stopPropagation()"/>
+              <p>
+                <svg style="display:inline;vertical-align:middle;margin-right:5px" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Drop files here or <span class="browse-link">click to browse</span>
+              </p>
+            </div>
+
+            <div class="gh-file-list" id="gh-file-list">
+              <div id="gh-file-items"></div>
+            </div>
+            <div class="gh-files-ready" id="gh-files-ready">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              All 3 required files detected — ready to upload to GitHub!
+            </div>
+            <div class="gh-files-missing" id="gh-files-missing"></div>
           </div>
         </div>
 
-        <div class="gh-step">
+        <!-- Step 4: clickable → GitHub Pages docs -->
+        <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site" target="_blank" class="gh-step">
           <div class="gh-step-num">4</div>
           <div class="gh-step-body">
             <h4>Enable GitHub Pages</h4>
-            <p>Click the <strong>Settings</strong> tab → <strong>Pages</strong> in the left sidebar. Under Source, select <strong>Deploy from a branch</strong> → Branch: <strong>main</strong> → Click <strong>Save</strong>.</p>
+            <p>Click here for the GitHub Pages setup guide. In your repo: <strong>Settings</strong> → <strong>Pages</strong> → Source: <strong>Deploy from a branch</strong> → Branch: <strong>main</strong> → <strong>Save</strong>.</p>
           </div>
-        </div>
+        </a>
 
+        <!-- Step 5: informational -->
         <div class="gh-step">
           <div class="gh-step-num">5</div>
           <div class="gh-step-body">
             <h4>Copy your live URL — it's ready in ~60 seconds</h4>
-            <p>Stay on the Pages settings page. A green banner will appear with your URL in the format <code>[username].github.io/[repo-name]/</code>. Copy it. Send it.</p>
+            <p>Stay on the Pages settings page. A green banner will appear with your URL in the format <code>[username].github.io/[repo-name]/</code>. Copy it. Send it. Done.</p>
           </div>
         </div>
 
@@ -1174,7 +1248,68 @@ function copyOutput() {
   });
 }
 
-/* Netlify functions removed — GitHub Pages is now the deploy method */
+/* ── Step 3 file drop zone ── */
+const REQUIRED_FILES = ['index.html', 'team.html', 'exec-summary.html'];
+let ghFiles = [];
+
+function ghDragOver(e) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('gh-drop-zone').classList.add('drag-over');
+}
+function ghDragLeave(e) {
+  e.stopPropagation();
+  document.getElementById('gh-drop-zone').classList.remove('drag-over');
+}
+function ghDrop(e) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('gh-drop-zone').classList.remove('drag-over');
+  ghAddFiles(Array.from(e.dataTransfer.files));
+}
+function ghFileSelect(e) {
+  ghAddFiles(Array.from(e.target.files));
+}
+function ghAddFiles(files) {
+  files.forEach(f => { if (!ghFiles.find(x => x.name === f.name)) ghFiles.push(f); });
+  ghRenderFiles();
+}
+function ghRenderFiles() {
+  if (ghFiles.length === 0) return;
+  const listEl   = document.getElementById('gh-file-list');
+  const itemsEl  = document.getElementById('gh-file-items');
+  const readyEl  = document.getElementById('gh-files-ready');
+  const missingEl= document.getElementById('gh-files-missing');
+  listEl.classList.add('visible');
+
+  const fileNames = ghFiles.map(f => f.name.toLowerCase());
+  const missing = REQUIRED_FILES.filter(r => !fileNames.includes(r));
+  const extra   = ghFiles.filter(f => !REQUIRED_FILES.includes(f.name.toLowerCase()));
+
+  itemsEl.innerHTML = [
+    ...REQUIRED_FILES.map(r => {
+      const found = fileNames.includes(r);
+      return `<div class="gh-file-item ${found ? 'found' : 'missing'}">
+        ${found
+          ? `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round"/></svg>`
+          : `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/></svg>`}
+        ${r}${found ? '' : ' — missing'}
+      </div>`;
+    }),
+    ...extra.map(f => `<div class="gh-file-item extra">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round"/></svg>
+      ${f.name}
+    </div>`)
+  ].join('');
+
+  if (missing.length === 0) {
+    readyEl.classList.add('visible');
+    missingEl.classList.remove('visible');
+    missingEl.innerHTML = '';
+  } else {
+    readyEl.classList.remove('visible');
+    missingEl.classList.add('visible');
+    missingEl.innerHTML = `Missing: <strong>${missing.join(', ')}</strong> — add them and you're ready.`;
+  }
+}
 </script>
 <style>
 @keyframes spin { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
